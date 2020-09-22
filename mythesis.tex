@@ -1,0 +1,134 @@
+\documentclass[defaultstyle,11pt]{thesis}
+
+\usepackage{amssymb}		% to get all AMS symbols
+\usepackage{graphicx}		% to insert figures
+\usepackage{hyperref}		% PDF hyperreferences??
+% \usepackage{times}
+
+% self packages
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{enumitem}
+
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+%%%%%%%%%%%%   All the preamble material:   %%%%%%%%%%%%
+
+\title{Metadata Matters: Adaptation Methods for Robust Document Classification}
+
+\author{Xiaolei}{Huang}
+
+\otherdegrees{B.E., Central China Normal University, 2013 \\
+	      M.S., Chinese Academy of Sciences, 2016 \\
+	      M.S., University of Colorado Boulder, 2019}
+
+\degree{Doctor of Philosophy}		%  #1 {long descr.}
+	{Ph.D., Information Science}		%  #2 {short descr.}
+
+\dept{Department of}			%  #1 {designation}
+	{Information Science}		%  #2 {name}
+
+\advisor{Prof.}				%  #1 {title}
+	{Robin Burke}			%  #2 {name}
+
+\reader{Prof. Michael Paul}		%  2nd person to sign thesis
+\readerThree{Prof. James H. Martin}		%  3rd person to sign thesis
+\readerFour{Prof. Mark Dredze}		%  4th person to sign thesis
+\readerFive{Prof. Byron Wallace}		%  5th person to sign thesis
+
+
+\abstract{  %\OnePageChapter	% because it is very short
+% My recent research has demonstrated that metadata has enormous impacts on performances of document classifiers. However, models for \textit{document classification}, the automatic categorization of documents into categories, typically ignore metadata attributes of documents. Metadata, implicitly embedded in documents such as time, gender, age, and location, can have tremendous impacts on the process of building reliable document classifiers. Specifically, we find that classifiers trained by previous year's corpora perform worse on future year's corpora, and similarly, classifiers trained on non-US English (Canadian and British English) corpora has a worse performance on US English corpora, and classifiers show strong gender biases that perform better on male generated documents than females'. Why? Language varies across document metadata: time, gender, age, and location. For example, word senses, usage and context shift over periods of time, and males and females express sentiment differently. Such variations bring both challenges and opportunities to make document classifiers more reliable. 
+
+% % chapter 3 and 4
+% We propose to use \textit{domain adaptation} to treat each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporal and user demographic factors into document classifiers.
+% First, to explore, examine, model and evaluate the language variations into classifiers, we collect and publicize near 1 million labeled documents and 900K annotated metadata entries.\footnote{Data can be accessed by \url{https://cmci.colorado.edu/~mpaul/files/starsem2019_demographics.data.zip}.}
+% Next, we proposed multiple solutions to embed the metadata into document representations: feature augmentation, diachronic word embedding and multitask learning. 
+% By adapting knowledge of how language varies across the metadata, we can train and learn generalized representations of languages, the metadata-invariant document embeddings. 
+% The experiments show our approaches such metadata-invariant document classifiers can generally improve the classification performance.
+
+% % chapter 5
+% After showing the effectiveness of the domain adaptation methods, we turn to the NLP ethic and fairness issues caused by language variations. 
+% We first collect a hate speech corpora that contains 84K tweets and 64K user entries.
+% To obtain domain (gender, age, etc.) invariant document representations, we then propose a feature augmentation method to reduce biases of document classifiers.
+% Our hypothesis is that by learning domain invariant document representations, the classifiers can reduce its biases.
+% The experiments show the domain adaptation approach can extend to improve fairness in machine learning (unintended bias).
+
+% % chapter 6
+% To model both temporal and user demographic factors together, we propose \textit{Dynamic User Embedding} and \textit{Demographic User Embedding} to embed metadata into a single fixed representation by learning user linguistic behaviors.
+% By combining user embedding and document classifiers, we can personalize document classifiers and therefore improve document classification performance and further reduce classifier biases. 
+% The proposed dynamic and demographic user embedding will have a broader impact on personalized recommendation and language generation beyond building reliable document classifiers.
+
+Metadata, implicitly embedded in documents such as time, gender, age, location, and user history, impacts performances of document classifiers. For example, word sense, usage and context shift over periods of time, and males and females express sentiment differently. However, models for document classification, the automatic categorization of documents into categories, typically ignore metadata attributes of documents. 
+
+In this thesis, we propose to use domain adaptation to treat each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporality and user factors into document classifiers. We explore three main directions that adapt metadata into learning representations to build reliable document classifiers. First, we propose the temporality adaptation that explicitly incorporates time into representation learning and modeling processes. Second, we propose a multitask framework using deep neural networks to adapt user demographic factors into document classifiers. We explore the NLP ethic and fairness issues due to the demographic variations and propose a standard feature augmentation method to reduce biases of document classifiers. Finally, we personalize classification models by the user embedding that embeds heterogeneous metadata into a single fixed representation via learning user linguistic behaviors. 
+
+This thesis will also show how those proposed metadata-adapted models can be used in various scientific applications, such as tracking public opinions of public health issues in social media, medical diagnosis and hate speech detection.
+
+}
+
+\dedication[Dedication]{	% NEVER use \OnePageChapter here.
+	For the friends and family, who have supported and shaped me on this academic journey. 
+	}
+
+\acknowledgements{	\OnePageChapter	% *MUST* BE ONLY ONE PAGE!
+    This thesis would not have been done without the support of so many people.
+    
+    Committee: Michael, Mark, Robin, Jim and Byron.
+    
+    Collaborators: David Broniatowski, Amelia Jamison, Sandra C. Quinn. 
+    
+    Summers: Stefan Scherer, Brian Borsari, Lixing Liu, Jason Wu. Jonathan May, Nanyun Peng. 
+    Franck Dernoncourt, Walter Chang, Logan Lebanoff and Anthony Michael Colas. Minmin Shen and Angeliki Metallinou (Multimodal machine learning). 
+    
+    Before PhD: David Chiu, Tingshao Zhu. 
+    
+    Colleagues: Leysia Palen, Jordan Boyd-Graber, Jed Brubaker, Stephen Voida, Danielle Szafir, Martha Palmer, Amy Voida, Casey Fiesler, Lecia Barker. Linzi Xing, Ben Niu, Ashlynn Daughton, Shudong Hao, Dianna Radpour, Yoshinari Fujinuma. Matt Whitlock, Wendy Norris, Paiheng Xu, Alvin Grissom II, Wei-Lun Harry Chao.
+    
+    Family: Tingting, Shangming, Qianli.
+}
+
+% \IRBprotocol{E927F29.001X}	% optional!
+
+\ToCisShort	% use this only for 1-page Table of Contents
+
+\LoFisShort	% use this only for 1-page Table of Figures
+% \emptyLoF	% use this if there is no List of Figures
+
+\LoTisShort	% use this only for 1-page Table of Tables
+% \emptyLoT	% use this if there is no List of Tables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%       BEGIN DOCUMENT...         %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\input{macros.tex}
+\input{chapter1.tex}
+\input{chapter2.tex}
+\input{chapter3.tex}
+\input{chapter4.tex}
+\input{chapter5.tex}
+\input{chapter6.tex}
+
+%%%%%%%%%   then the Bibliography, if any   %%%%%%%%%
+\bibliographystyle{acm}	% or "siam", or "alpha", etc.
+\nocite{*}		% list all refs in database, cited or not
+\bibliography{refs}		% Bib database in "refs.bib"
+
+%%%%%%%%%   then the Appendices, if any   %%%%%%%%%
+% \appendix
+% \input Vita.tex
+% \input appendixB.tex
+
+
+\end{document}
