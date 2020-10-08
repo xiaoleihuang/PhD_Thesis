@@ -39,39 +39,24 @@
 \advisor{Prof.}				%  #1 {title}
 	{Robin Burke}			%  #2 {name}
 
-\reader{Prof. Michael Paul}		%  2nd person to sign thesis
+\reader{Dr. Michael Paul}		%  2nd person to sign thesis
 \readerThree{Prof. James H. Martin}		%  3rd person to sign thesis
 \readerFour{Prof. Mark Dredze}		%  4th person to sign thesis
 \readerFive{Prof. Byron Wallace}		%  5th person to sign thesis
 
 
-\abstract{  %\OnePageChapter	% because it is very short
-% My recent research has demonstrated that metadata has enormous impacts on performances of document classifiers. However, models for \textit{document classification}, the automatic categorization of documents into categories, typically ignore metadata attributes of documents. Metadata, implicitly embedded in documents such as time, gender, age, and location, can have tremendous impacts on the process of building reliable document classifiers. Specifically, we find that classifiers trained by previous year's corpora perform worse on future year's corpora, and similarly, classifiers trained on non-US English (Canadian and British English) corpora has a worse performance on US English corpora, and classifiers show strong gender biases that perform better on male generated documents than females'. Why? Language varies across document metadata: time, gender, age, and location. For example, word senses, usage and context shift over periods of time, and males and females express sentiment differently. Such variations bring both challenges and opportunities to make document classifiers more reliable. 
-
-% % chapter 3 and 4
-% We propose to use \textit{domain adaptation} to treat each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporal and user demographic factors into document classifiers.
-% First, to explore, examine, model and evaluate the language variations into classifiers, we collect and publicize near 1 million labeled documents and 900K annotated metadata entries.\footnote{Data can be accessed by \url{https://cmci.colorado.edu/~mpaul/files/starsem2019_demographics.data.zip}.}
-% Next, we proposed multiple solutions to embed the metadata into document representations: feature augmentation, diachronic word embedding and multitask learning. 
-% By adapting knowledge of how language varies across the metadata, we can train and learn generalized representations of languages, the metadata-invariant document embeddings. 
-% The experiments show our approaches such metadata-invariant document classifiers can generally improve the classification performance.
-
-% % chapter 5
-% After showing the effectiveness of the domain adaptation methods, we turn to the NLP ethic and fairness issues caused by language variations. 
-% We first collect a hate speech corpora that contains 84K tweets and 64K user entries.
-% To obtain domain (gender, age, etc.) invariant document representations, we then propose a feature augmentation method to reduce biases of document classifiers.
-% Our hypothesis is that by learning domain invariant document representations, the classifiers can reduce its biases.
-% The experiments show the domain adaptation approach can extend to improve fairness in machine learning (unintended bias).
-
-% % chapter 6
-% To model both temporal and user demographic factors together, we propose \textit{Dynamic User Embedding} and \textit{Demographic User Embedding} to embed metadata into a single fixed representation by learning user linguistic behaviors.
-% By combining user embedding and document classifiers, we can personalize document classifiers and therefore improve document classification performance and further reduce classifier biases. 
-% The proposed dynamic and demographic user embedding will have a broader impact on personalized recommendation and language generation beyond building reliable document classifiers.
+\abstract{
 
 Metadata, implicitly embedded in documents such as time, gender, age, location, and user history, impacts performances of document classifiers. For example, word sense, usage and context shift over periods of time, and males and females express sentiment differently. However, models for document classification, the automatic categorization of documents into categories, typically ignore metadata attributes of documents. 
+In this thesis, we propose to use domain adaptation to treat each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporality and user factors into document classifiers. To build reliable classifiers, we develop two types of adaptations that model the metadata into document representations. 
 
-In this thesis, we propose to use domain adaptation to treat each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporality and user factors into document classifiers. We explore three main directions that adapt metadata into learning representations to build reliable document classifiers. First, we propose the temporality adaptation that explicitly incorporates time into representation learning and modeling processes. Second, we propose a multitask framework using deep neural networks to adapt user demographic factors into document classifiers. We explore the NLP ethic and fairness issues due to the demographic variations and propose a standard feature augmentation method to reduce biases of document classifiers. Finally, we personalize classification models by the user embedding that embeds heterogeneous metadata into a single fixed representation via learning user linguistic behaviors. 
+First, we propose the \textit{temporality adaptation} that explicitly incorporates time into representation learning and modeling processes via feature augmentation and diachronic word embedding. We particularly consider a corpus that spans over a series of temporal periods and a classifier that is trained during one time period and tested during future time periods. We apply a feature augmentation method that extracts and builds time-independent document representations. We then propose an end-to-end neural temporal adaptation model that learns the temporal factor from diachronic word embedding to a time-drive learning neural framework.
 
-This thesis will also show how those proposed metadata-adapted models can be used in various scientific applications, such as tracking public opinions of public health issues in social media, medical diagnosis and hate speech detection.
+Second, we propose the \textit{user factor adaptation} that models user demographic attributes and histories into document classifiers. 
+We propose a multitask framework to jointly model the demographic factors and document categories, where a document classifier receives optimization feedback from both document class and demographic factor predictions.
+To adapt user histories into document classifier, we further develop a user embedding model that jointly learns user word usage and purchasing behaviors and personalize document representations with the learned embeddings of user histories. 
+
+Finally, we release a multilingual hate speech corpus with four author-level demographic attributes, and we explore how demographic variations can cause fairness and ethic issues. We evaluate fairness issues of several document classification models on the multilingual corpus. Following this, we further explore to reduce demographic biases of the hate speech classifiers via a standard feature augmentation method.
 
 }
 
@@ -79,21 +64,31 @@ This thesis will also show how those proposed metadata-adapted models can be use
 	For the friends and family, who have supported and shaped me on this academic journey. 
 	}
 
-\acknowledgements{	\OnePageChapter	% *MUST* BE ONLY ONE PAGE!
-    This thesis would not have been done without the support of so many people.
+\acknowledgements{	%\OnePageChapter	% *MUST* BE ONLY ONE PAGE!
+    This thesis can not be done with supports from my thesis committee members.
+    I want to give my highest gratitude to my Ph.D. advisor, Michael J. Paul.
+    He is a fantastic advisor that provides me with his generous support and endless help but not pressure or constraint along my four years of enjoyable and delightful study.
+    Michael sets me an awesome example as a nice and good advisor that I could follow in the future.
+    I really appreciate Mark Dredze's guidance and support on my research direction and career development. 
+    Mark involved me in several projects through past years and gave me a really valuable visiting chance at the Johns Hopkins University. 
+    His technical depth, application broadness as well as balance between work and family is a life-long inspiration for me.
+    I want to thank Robin D. Burke for his feedback and help on my research and career development. 
+    I am really inspired by his research and work experience from industry to academia.
+    I had the fortune to have James H. Martin as my thesis committee member.
+    Jim inspired me in many ways in both research and education that rebuilt my confidence when I started my doctoral study. 
+    I am very lucky to have Byron Wallace in my thesis committee. I first met him when I applied the doctoral study at UT-Austin. 
+    His passion in research and applications has deeply influenced my career goals and research agenda. 
     
-    Committee: Michael, Mark, Robin, Jim and Byron.
+    Beyond my thesis committee, I was fortunate to have a number of collaborations with people from both academia and industry. I enjoyed insightful discussions with David Broniatowski, Amelia Jamison, Sandra C. Quinn on multiple public health projects. 
+    It was really lucky to have my first industrial internship at Adobe Research with Franck Dernoncourt and Walter Chang. I really appreciate their generous support and continuous collaborations since then. 
+    I am lucky to spend two summers at the USC, where I worked with Stefan Scherer, Jonathan May and Nanyun Peng. I benefited a lot from helpful and encouraging discussions with them. 
+    It was an exciting internship experience at Amazon Lab 126 with Minmin Shen and Angeliki Metallinou. The unique project broadened my eyes and enhanced my skills of parallel GPUs.
+    The summer internship experience can not be so enjoyable without my friends including but not limit to: Anthony Michael Colas, Logan Lebanoff, Lixing Liu and Jason Wu.
     
-    Collaborators: David Broniatowski, Amelia Jamison, Sandra C. Quinn. 
+    I was honored to get into the PhD program at CU Boulder and benefited from the collaboration and advice from many faculty over the years, including but not limit to Jordan Boyd-Graber, Leysia Palen, Jed Brubaker, Stephen Voida, Danielle Szafir, Martha Palmer, Amy Voida and Casey Fiesler. I also owe a lot to my peer colleagues whose important discussions have helped me along the way: Linzi Xing, Ben Niu, Ashlynn Daughton, Shudong Hao, Dianna Radpour, Yoshinari Fujinuma, Matt Whitlock, Wendy Norris, Alvin Grissom II and Wei-Lun Harry Chao.
+    My research career started by the collaborations with David Chiu and Tingshao Zhu when I was in China. Their insightful discussions and helpful guidance initialized and initialized my career in NLP.
     
-    Summers: Stefan Scherer, Brian Borsari, Lixing Liu, Jason Wu. Jonathan May, Nanyun Peng. 
-    Franck Dernoncourt, Walter Chang, Logan Lebanoff and Anthony Michael Colas. Minmin Shen and Angeliki Metallinou (Multimodal machine learning). 
-    
-    Before PhD: David Chiu, Tingshao Zhu. 
-    
-    Colleagues: Leysia Palen, Jordan Boyd-Graber, Jed Brubaker, Stephen Voida, Danielle Szafir, Martha Palmer, Amy Voida, Casey Fiesler, Lecia Barker. Linzi Xing, Ben Niu, Ashlynn Daughton, Shudong Hao, Dianna Radpour, Yoshinari Fujinuma. Matt Whitlock, Wendy Norris, Paiheng Xu, Alvin Grissom II, Wei-Lun Harry Chao.
-    
-    Family: Tingting, Shangming, Qianli.
+    Finally, I am grateful for the support from my family and loved ones over the years, especially my parents Huang S.M. and Zhang Q.L. who gave me so much encouragement and shared me with their valuable experience; Yang T.T., who lighted up my enthusiasm for life. 
 }
 
 % \IRBprotocol{E927F29.001X}	% optional!

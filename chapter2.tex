@@ -349,7 +349,7 @@ For example, diachronic text evaluation~\cite{popescu2015semeval} split document
 % \paragraph{Demographic prediction} is a common task in natural language processing.
 Language varies across demographic factors. 
 Research has shown that social media text is predictive of demographic variables such as 
-gender~\cite{Rao:2010:CLU:1871985.1871993,Rao2011,Burger:2011:DGT:2145432.2145568,volkova2015inferring}, age~\cite{rosenthal2011age, hovy2015tagging,johannsen2015cross, zhang2016predicting, diaz2018addressing}, race~\cite{preoctiuc2018user} and location~\cite{EisensteinEtAl10,wing2011simple,wing2014hierarchical}.
+gender~\cite{rao2010classifying, rao2011hierarchical, burger2011discriminating, volkova2015inferring}, age~\cite{rosenthal2011age, hovy2015tagging,johannsen2015cross, zhang2016predicting, diaz2018addressing}, race~\cite{preoctiuc2018user} and location~\cite{EisensteinEtAl10,wing2011simple,wing2014hierarchical}.
 For example, male and female express sentiment differently and young people use more widely emoji in their social media than elders.
 Such variations can also cause biases of document classifiers towards a specific demographic group~\cite{sun2019mitigating}.
 Research show that hate speech classifiers tend to classify African American English words as hate crime, yet such words might strongly correlate with the specific racial group and cause racial biases~\cite{davidson2019racial, sap2019risk}.
@@ -385,14 +385,14 @@ Common features include user generated reviews, user profiles and networking con
 Yet, not every dataset have the networking connections, this thesis only consider user generated text documents and profile information.
 To generate the user features, researchers have proposed various approaches including n-gram features~\cite{benton2016learning}, LDA~\cite{zhang2015using, ding2017multi}, Word2vec~\cite{amir2016modelling, benton2016learning, amir2017quantifying, wu2018starspace}, Doc2vec~\cite{ding2017multi, ding2018predicting}, etc.
 The generated user features are usually multiple views of user behaviors. 
-To map the multi-view features into a fixed representation, researchers have deployed methods including concatenation~\cite{pennacchiotti2011a}, average~\cite{ding2017multi}, Generalized Canonical Correlation Analysis (GCCA)~\cite{benton2016learning}.
+To map the multi-view features into a fixed representation, researchers have deployed methods including concatenation~\cite{pennacchiotti2011machine}, average~\cite{ding2017multi}, Generalized Canonical Correlation Analysis (GCCA)~\cite{benton2016learning}.
 
 % skip-gram~\cite{amir2016modelling}
 Using Skip-gram to jointly train word and user embeddings is a common way to obtain fixed representations of users~\cite{amir2017quantifying, wu2018starspace}, as shown in Figure~\ref{chap2:fig:user}.
 The model jointly trains two prediction tasks at the same time: predicting if the input words are mutual contexts or not and if users used the input words.
 
 
-\subsection{Fairness in NLP}
+\subsection{Demographic Bias in NLP}
 
 \textit{Demographic bias} has been shown to be encoded in machine learning models. 
 Fairness is especially critical to the public health research, which analyzes across demographic groups over time. 

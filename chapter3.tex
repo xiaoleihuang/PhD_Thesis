@@ -8,7 +8,7 @@ natural language processing models over time.
 For example, document classifiers are typically trained on historical data and tested on future data, where the performance tends to be worse.
 Recent research has shown that document classifiers can become more stable over time when trained in ways that specifically account for temporal variations~\cite{he2018time}.
 We refer to this task of accounting for such variations during training as {\em temporality adaptation}.
-This chapter is based on materials from~\cite{huang2018examining, huang2019neural}.\footnote{The improved dataset along with the code from our original paper is available on: \\\url{https://github.com/xiaoleihuang/Neural_Temporality_Adaptation}, \\\url{https://github.com/xiaoleihuang/Domain_Adaptation_ACL2018}.}
+This chapter is based on materials from~\cite{huang2018examining, huang2019neural}.\footnote{The improved dataset along with the code are available on: \\\url{https://github.com/xiaoleihuang/Neural_Temporality_Adaptation}, \\\url{https://github.com/xiaoleihuang/Domain_Adaptation_ACL2018}.}
 
 This chapter organizes into three main parts.
 It starts with introducing six English and Chinese datasets from both social media and newspaper sources, spanning varying lengths in time (from several decades to only a few years) in Section~\ref{chap3:sec:data}. 
@@ -57,16 +57,17 @@ From the application perspective, while other research has applied diachronic wo
 Time is implicitly embedded in the document classification process: 
 classifiers are often built to be applied to future data that doesn't yet exist,
 and performance on held-out data is measured to estimate performance on future data whose distribution may have changed.
-Methods exist to adjust for changes in the data distribution ({\em covariate shift}) \cite{SHIMODAIRA2000227,Bickel09},
+Methods exist to adjust for changes in the data distribution ({\em covariate shift}) \cite{shimodaira2000improving, bickel2009discriminative},
 but time is not typically incorporated into such methods explicitly.
-One line of work that explicitly studies the relationship between time and the distribution of data is work on classifying the time period in which a document was written ({\em document dating}) \cite{Kanhabua08,Chambers:2012:LDT:2390524.2390539,Kotsakos:2014:BAD:2600428.2609495}.
+One line of work that explicitly studies the relationship between time and the distribution of data is work on classifying the time period in which a document was written ({\em document dating}) \cite{Kanhabua08, chambers2012labeling, Kotsakos:2014:BAD:2600428.2609495}.
 However, this task is directed differently from our work: predicting timestamps given documents, rather than predicting information about documents given timestamps.
+Recent work~\cite{desai2019adaptive} used the student and teacher framework to constrained feature variations across domains for classifying whether documents are political, however, the main experimental settings in the work are different from ours, which the training set does not have time spans and do not explicitly augment document representations on the time. The work mainly focused on different source domains (New York Times vs. others) instead of the temporal domain which is our main focus in this thesis.
 
 
 \section{Time-Varying Corpora}
 \label{chap3:sec:data}
 
-The way people use words to express opinions has been constantly changing over time~\cite{mihalcea2012word, kulkarni2015statistically, hamilton2016diachronic}. In this section, we introduce our corpora for this paper and conduct initial analyses on how word usage shifts over time in news articles and social media data in both English and Chinese with respect to the task of classification. We explore the language shift issue from two perspectives: word usage variation, context shift and topic change. We then examine how the language variations impact on the document classification task.
+The way people use words to express opinions has been constantly changing over time~\cite{mihalcea2012word, kulkarni2015statistically, hamilton2016diachronic}. In this section, we introduce our corpora for this chapter and conduct initial analyses on how word usage shifts over time in news articles and social media data in both English and Chinese with respect to the task of classification. We explore the language shift issue from two perspectives: word usage variation, context shift and topic change. We then examine how the language variations impact on the document classification task.
 
 \subsection{Data}
 We retrieved available data sources from previous publications~\cite{zhang2014explicit, he2016ups, huang2018examining}. Specifically, we use four different sources in in English---Amazon (music reviews), Yelp (restaurant and hotel reviews), Twitter (vaccine tweets), economic newspaper articles~\cite{figure_eight_2015} and political sentences from the American party platforms of Republicans and Democrats from 1948 to 2016, available every four years \footnote{\url{https://www.comparativeagendas.net/datasets_codebooks}} and one source in Chinese, Dianping~\cite{meituan-dianping_2019}.
@@ -218,6 +219,15 @@ The Figure~\ref{chap3:fig:time} can demonstrate that the temporal variations dir
     \item Classifiers generally perform worse on farther time intervals than closer time intervals.
 \end{itemize}
 
+\subsubsection{Preprocessing}
+%MP: The label details are already described in 2.1.
+%
+We use NLTK~\cite{bird2004nltk} to tokenize the English corpora and the Jieba Python module~\cite{sun2012jieba} to segment the Chinese data. 
+We discard reviews that had fewer than 10 tokens. 
+For the Twitter data, we anonymize the data and replace usernames, hyperlinks, and hashtags with ``USER'', ``URL'', ``HASHTAG'' respectively. 
+All other text is lowercased.
+For the four review datasets (Amazon, Dianping, Yelp restaurant and hotel) we encode the 5-point review score into three categories: reviews scores smaller than 3 were labeled as ``0'', larger than 3 are labeled as ``2'', and labeled as ``1'' if the score is 3. We binarize labels of the newspaper, political and Twitter data. 
+
 
 \section{Feature Augmentation}
 \label{chap3:sec:fa}
@@ -233,8 +243,12 @@ In our experiments, we use the feature augmentation approach of \cite{daume2007f
 This approach is widely used due to its simplicity, and derivatives of this approach have been used in similar work (e.g., \cite{lynn2017human}).
 Following~\cite{Finkel09}, we separately adjust the regularization strength for the domain-independent feature weights and the domain-specific feature weights.
 
+\subsection{Experiments}
 
-\subsection{Seasonal Adaptation}
+In this section, we conduct experiments on Amazon, Yelp, Twitter, Political and Economy datasets with both seasonal and non-seasonal spans. 
+We convert the review datasets into binary labels by discarding documents with the neutral labels.
+
+\subsubsection{Seasonal Adaptation}
 
 \begin{table}[htp]
 \centering
@@ -259,7 +273,7 @@ Results are shown in Table~\ref{chap3:tab:results_seasonal}.
 We see that applying domain adaptation provides a small boost in three of the datasets, and has no effect on two of the datasets.
 If this pattern holds in other corpora, then this suggests that it does not hurt performance to apply domain adaptation across different times of year, and in some cases can lead to a small performance boost.
 
-\subsection{Non-seasonal Adaptation}
+\subsubsection{Non-seasonal Adaptation}
 \label{subsec:nonseasonal}
 
 \begin{table*}[htp]
@@ -295,7 +309,8 @@ How to apply the feature augmentation technique to unseen domains is not well un
 By removing the domain-specific features, as we did here, the prediction model has changed, and so its behavior may be hard to predict.
 Nonetheless, this appears to be a successful approach.
 
-\subsection{Dual Adaptation}
+\subsubsection{Dual Adaptation}
+
 We also experimented with including the seasonal features when performing non-seasonal adaptation.
 In this setting, we train the models with two domain-specific features in addition to the domain-independent features: one for the season, and one for the non-seasonal interval. 
 As above, we remove the non-seasonal features at test time; however, we retain the season-specific features in addition to the domain-independent features, as they can be reused in future years.
@@ -393,16 +408,21 @@ This highlights the advantages of using character-level in our proposed method: 
 % discuss the methods
 % how we implement the method, what are their features
 
-\paragraph{Static.} We train the word2vec model~\cite{mikolov2013distributed} on the entire corpus without considering time information.
-We keep the training parameters as the default values.
+\paragraph{Static.} 
+We train the word2vec model~\cite{mikolov2013distributed} on the entire corpus without considering time information.
+The training parameters keep their default values in the Gensim~\cite{rehurek2010software}.
 
-\paragraph{Linear.} Kulkarni et al.~\cite{kulkarni2015statistically} proposed a linear alignment method. The approach first extracts k nearest neighbors of words in both source and target domains and then uses linear regression model to minimize the distance between those word representations. We use the \textit{NearestNeighbors} from scikit-learn~\cite{pedregosa2011scikit} and \textit{WLS} function from StatsModels to implement the baseline.
+\paragraph{Linear.} 
+Kulkarni et al.~\cite{kulkarni2015statistically} proposed a linear alignment method. The approach first extracts k nearest neighbors of words in both source and target domains and then uses linear regression model to minimize the distance between those word representations. We use the \textit{NearestNeighbors} from scikit-learn~\cite{pedregosa2011scikit} and \textit{WLS} function from StatsModels to implement the baseline.
 
-\paragraph{Procrustes.} Hamilton et al.~\cite{hamilton2016diachronic} used orthogonal Procrustes to align yearly embedding models. We implement the model via \textit{procurstes} function in SciPy~\cite{scipy_2001}. We align embedding models of other temporal intervals towards the embedding model in the latest time interval.
+\paragraph{Procrustes.} 
+Hamilton et al.~\cite{hamilton2016diachronic} used orthogonal Procrustes to align yearly embedding models. We implement the model via \textit{procurstes} function in SciPy~\cite{scipy_2001}. We align embedding models of other temporal intervals towards the embedding model in the latest time interval.
 
-\paragraph{Hierarchy.} Zhang et al.~\cite{zhang2017temporal} developed a weighted linear transformation method weighted by hierarchical clusters of words. To build transformation matrices, the method first chooses top 5\% frequent terms in the intersections of vocabularies among the corpora across temporal domains. Then it calculates the weights by the hop distance in the clusters. Finally, the method can learn weighted transformation matrices to align temporal domains together. To implement the model, we used \textit{Ridge} and \textit{linkage} functions from scikit-learn~\cite{pedregosa2011scikit} and SciPy~\cite{scipy_2001} respectively. We set the k as 0, weight of l2-norm as 0.05 and leave the rest parameters as default.
+\paragraph{Hierarchy.} 
+Zhang et al.~\cite{zhang2017temporal} developed a weighted linear transformation method weighted by hierarchical clusters of words. To build transformation matrices, the method first chooses top 5\% frequent terms in the intersections of vocabularies among the corpora across temporal domains. Then it calculates the weights by the hop distance in the clusters. Finally, the method can learn weighted transformation matrices to align temporal domains together. To implement the model, we used \textit{Ridge} and \textit{linkage} functions from scikit-learn~\cite{pedregosa2011scikit} and SciPy~\cite{scipy_2001} respectively. We set the k as 0, weight of l2-norm as 0.05 and leave the rest parameters as default.
 
-\paragraph{DW2C.} Yao et al.~\cite{yao2018dynamic} designed a joint optimization problem that minimizes distances between the embeddings and positive point-wise mutual information (PPMI) and distances between every pair of temporal domain's static embeddings. We follow the same parameter settings in their source codes.\footnote{\url{https://github.com/yifan0sun/DynamicWord2Vec}}
+\paragraph{DW2C.} 
+Yao et al.~\cite{yao2018dynamic} designed a joint optimization problem that minimizes distances between the embeddings and positive point-wise mutual information (PPMI) and distances between every pair of temporal domain's static embeddings. We follow the same parameter settings in their source codes.\footnote{\url{https://github.com/yifan0sun/DynamicWord2Vec}}
 
 \subsubsection{Evaluation Results}
 % introduce the methods we use to evaluate the models
@@ -411,7 +431,7 @@ The evaluation set is from the \textit{DW2V}~\cite{yao2018dynamic}, which measur
 The test set contains $1,888$ entries with three different columns: word, section label and year.
 The section label has 11 different categories and indicates close meanings of words at the certain years in New York Times, for example, the ``adobe'' is under ``Technology'' section label in 2011.
 The year is the time information when the word and section label were generated.
-We adjust the year label to the time domain schema in this paper.
+We adjust the year label to the time domain schema.
 For example, if the year is 2013, we will convert it to 2011-13.
 
 $$F_\beta = \frac{(\beta^2 + 1) * P * R}{\beta^2*P + R}$$
@@ -444,15 +464,12 @@ Ours & \textbf{.810} & \textbf{.916} & \textbf{.905}
 Our method consistently outperforms the other methods and gain about 3.37 absolute percentage improvements. We can also find that a larger cluster generally has better results than a smaller cluster number.
 
 
-\subsection{Analysis 4: Semantic Distribution Shift}
+\subsection{Analysis 5: Semantic Distribution Shift using DWE}
 
 \begin{figure}[tb!]
 \centering
 \includegraphics[width=0.43\textwidth]{images/chapter3/sm_shift/yelp_hotel_year_freq.pdf}
 \includegraphics[width=0.43\textwidth]{images/chapter3/sm_shift/yelp_hotel_year_mi.pdf}
-% \quad
-% \includegraphics[width=0.23\textwidth]{images/chapter3/lang_use/yelp_hotel.pdf}
-% \includegraphics[width=0.23\textwidth]{images/chapter3/lang_use/yelp_rest.pdf}
 \caption{Semantic distribution shifts comparison between the top and most frequent words via Wasserstein distance. We present Yelp-hotel data for the illustration purposes and omit the other data due to space limits. The left is the semantic distribution shift for frequent words, the right is for top words ranked by mutual information. The higher score indicates higher shift.}
 \label{chap3:fig:sm_shift}
 \end{figure}
@@ -555,11 +572,6 @@ We conduct experiments on the task of document classification.
 We split the data chronologically to simulate the realistic scenario where a classifier is trained on older data and tested on newer data. 
 Thus, the first $T-1$ time domains are used for training;
 the last time domain is split into two equal-sized sets for development and testing.
-
-\subsubsection{Preprocessing}
-%MP: The label details are already described in 2.1.
-%For the four review datasets (Amazon, Dianping, Yelp restaurant and hotel) we encode the 5-point review score into three categories: reviews scores smaller than 3 were labeled as ``0'', larger than 3 are labeled as ``2'', and labeled as ``1'' if the score is 3. We binarize labels of the newspaper and Twitter data. 
-We use NLTK~\cite{bird2004nltk} to tokenize the English corpora and the Jieba Python module~\cite{sun2012jieba} to segment the Chinese data. We discard reviews that had fewer than 10 tokens. For the Twitter data, we anonymize the data and replace usernames, hyperlinks, and hashtags with ``USER'', ``URL'', ``HASHTAG'' respectively. All other text is lowercased.
 The final data details are described in Table~\ref{chap3:table:statics}.
 
 \begin{table}[ht]
@@ -582,28 +594,36 @@ The final data details are described in Table~\ref{chap3:table:statics}.
     \label{chap3:table:statics}
 \end{table}
 
+
 \subsubsection{Implementation and Training}
 We implement classification models using Keras~\cite{chollet2015keras} and scikit-learn~\cite{pedregosa2011scikit}. We select the top 15K words by frequency and set the other words as ``unk''. The models are trained for 15 epochs with the batch size of 64. Each document is padded to 60 tokens. We set the Bi-LSTM output to 200 dimensions. We choose ReLU~\cite{hahnloser2000digital} as the activation function of the dense layer and 0.2 as our default dropout rate~\cite{srivastava2014dropout}. The dense layer outputs 200 dimensions for final document class prediction. We select cross-entropy as our default loss function, and we optimize model parameters via RMSprop~\cite{tieleman2012lecture} with the learning rate as 0.0001. Unless otherwise stated, we leave the other parameters as defaults.
 
 \subsubsection{No Adaptation Baselines}
 To ensure fair comparisons, we use the same settings across all models. We compare our proposed model to seven baselines, where three standard classifiers do not perform temporality adaptation.
 
-\paragraph{LR.} We extract 1- and 2-gram features on the corpora with the most frequent 15K features. We then build a logistic regression classifier using \texttt{LogisticRegression} from scikit-learn~\cite{pedregosa2011scikit} with default parameters.
+\paragraph{LR.} 
+We extract 1- and 2-gram features on the corpora with the most frequent 15K features. We then build a logistic regression classifier using \texttt{LogisticRegression} from scikit-learn~\cite{pedregosa2011scikit} with default parameters.
 
-\paragraph{CNN.} We implement the Convolutional Neural Network (CNN) classifier described in~\cite{kim2014convolutional}. To keep consistent, we initialize the model with pre-trained word embeddings~\cite{bojanowski2017enriching} that were trained on the same datasets as the diachronic embeddings. We only keep the 15K most frequent words and replace the rest with an ``unk'' token. We set model optimizer as Adam~\cite{kingma2014adam}. We keep all other parameter settings as described in the paper.
+\paragraph{CNN.} 
+We implement the Convolutional Neural Network (CNN) classifier described in~\cite{kim2014convolutional}. To keep consistent, we initialize the model with pre-trained word embeddings~\cite{bojanowski2017enriching} that were trained on the same datasets as the diachronic embeddings. We only keep the 15K most frequent words and replace the rest with an ``unk'' token. We set model optimizer as Adam~\cite{kingma2014adam}. 
 
-\paragraph{Bi-LSTM.} We build a bi-directional Long Short Term Memory (bi-LSTM)~\cite{hochreiter1997long} classifier to examine the effectiveness of temporal learning process in our proposed model. The classifier is initialized with the pre-trained word embeddings.
+\paragraph{Bi-LSTM.} 
+We build a bi-directional Long Short Term Memory (bi-LSTM)~\cite{hochreiter1997long} classifier to examine the effectiveness of temporal learning process in our proposed model. The classifier is initialized with the pre-trained word embeddings.
 
 \subsubsection{Domain Adaptation Baselines}
-\paragraph{FEDA.} Following \cite{huang2018examining} we adapt for time domains using the ``frustratingly easy'' domain adaptation (FEDA) method~\cite{daume2007frustratingly}. 
+
+\paragraph{FEDA.} 
+Following \cite{huang2018examining} we adapt for time domains using the ``frustratingly easy'' domain adaptation (FEDA) method~\cite{daume2007frustratingly}. 
 The feature set is augmented such that each feature has a domain-specific version of the feature for each time domain, as well as a general domain-independent version of the feature.
 The values of features are set to the original feature value for the domain-independent feature and the domain-specific features that apply to the document, while domain-specific features for documents that do not belong to that domain are set to $0$.
 At test time, we only use the general, domain-independent features. 
 We use the same feature extraction procedures and the same logistic regression classifier as the \textit{LR} baseline.
 
-\paragraph{DANN.} We consider the domain adversarial training network~\cite{ganin2016domain} (DANN) on the time adaptation task. We re-implement the same network and set domain prediction as predicting the time domain label while keeping the document label prediction as the default. We use the model from the epoch when the model achieves the best result on the development set for the final model.
+\paragraph{DANN.} 
+We consider the domain adversarial training network~\cite{ganin2016domain} (DANN) on the time adaptation task. We re-implement the same network and set domain prediction as predicting the time domain label while keeping the document label prediction as the default. We use the model from the epoch when the model achieves the best result on the development set for the final model.
 
-\paragraph{RCNN \& HAN.} He et al.~\cite{he2018time} propose an evolving framework to train document classifiers. We re-implement two classifiers, RCNN and HAN with diachronic propagation learning strategy, which achieved the best performances in their paper. The RCNN~\cite{lai2015recurrent} classifier integrates both LSTM and CNN, and the HAN~\cite{yang2016hierarchical} classifiers uses hierarchical attention neural architectures. We keep the two models with the same parameters as their open sourced code and initialize the two models with pre-trained 200 dimensional word embeddings~\cite{bojanowski2017enriching}. We apply Adam and RMsprop for RCNN and HAN respectively, because the two optimizers perform much better on validation sets than the stochastic gradient descent optimizer used in the original paper. The work is close to our work but there are three major differences:
+\paragraph{RCNN \& HAN.} 
+He et al.~\cite{he2018time} propose an evolving framework to train document classifiers. We re-implement two classifiers, RCNN and HAN with diachronic propagation learning strategy, which achieved the best performances in their paper. The RCNN~\cite{lai2015recurrent} classifier integrates both LSTM and CNN, and the HAN~\cite{yang2016hierarchical} classifiers uses hierarchical attention neural architectures. We keep the two models with the same parameters as their open sourced code and initialize the two models with pre-trained 200 dimensional word embeddings~\cite{bojanowski2017enriching}. We apply Adam and RMsprop for RCNN and HAN respectively, because the two optimizers perform much better on validation sets than the stochastic gradient descent optimizer used in the original paper. The work is close to our work but there are three major differences:
 \begin{itemize}
     \item Time invariance. We train one unified model with diachronic adaptation by using a time-independent representation (the 1 of the $T+1$ representations) to learn a time-invariant classifier that can be used for future data. In contrast, these baselines learn $T-1$ models, where they train one model for each time domain.
     \item Diachronic word embeddings. Our method uses diachronic word embeddings to encode inputs in $T+1$ different views. The baseline encoding is based on only the current embedding space and therefore might not capture embedding shifts over time.
@@ -683,7 +703,8 @@ with the RCNN generally outperforming the other baselines.
 %The RCNN generally shows improvements over the other neural non-adaptation models on the Yelp and Amazon datasets. 
 This indicates that the temporal factor can potentially improve the performance of document classification, and that domain adaptation is a possible approach to temporality adaptation. 
 
-\paragraph{Significance analysis.} To verify the improvements of our proposed method NTAM compared to baselines, we conduct a significance analysis to compare our proposed model with the RCNN, which is the closest model to ours. We follow \cite{berg2012empirical} and bootstrap sample 50 pairs of test datasets with replacement. We keep the same data size as the previous experiments in the Table~\ref{chap3:tab:results}. We then use the same previous parameters and re-conduct the classification experiments. We format the experimental results as two lists of scores. We conduct a paired t-test to test the null hypothesis that our proposed model does not differ significantly from the RCNN. The test presents a significant result with t(95) = 3.258 and p = 0.00119. The result suggests rejecting the null hypothesis at a 95\% confidence level.
+\paragraph{Significance analysis.} 
+To verify the improvements of our proposed method NTAM compared to baselines, we conduct a significance analysis to compare our proposed model with the RCNN, which is the closest model to ours. We follow \cite{berg2012empirical} and bootstrap sample 50 pairs of test datasets with replacement. We keep the same data size as the previous experiments in the Table~\ref{chap3:tab:results}. We then use the same previous parameters and re-conduct the classification experiments. We format the experimental results as two lists of scores. We conduct a paired t-test to test the null hypothesis that our proposed model does not differ significantly from the RCNN. The test presents a significant result with t(95) = 3.258 and p = 0.00119. The result suggests rejecting the null hypothesis at a 95\% confidence level.
 
 %\paragraph{Diachronic vs. general word embedding.} To explore the effectiveness of the diachronic word embedding, we compare the performance between diachronic and general word embeddings. We apply both types of word embeddings on the two temporality adaptation models, RCNN and NTAM. The NTAM initialized by diachronic word embedding obtains a small performance boost than the one initialized with general word embedding in main datasets. And the diachronic word embeddings also improve the RCNN in 4 out of 6 datasets. This indicates that diachronic word embedding plays an effective role in improving performances of the document classifier.
 
@@ -718,11 +739,8 @@ we find that our proposed subword method works the best on average for both clas
 \label{chap3:sec:conclusion}
 
 In this chapter, we proposed two temporality adaptation methods to improve the temporal robustness of document classifiers via the feature augmentation and diachronic word embedding.
-We explore and examine language temporal shifts on seven bilingual corpora from social media to news articles.
-We have shown both qualitatively and quantitatively that our proposed FEDA and diachronic word embedding are capable of discovering language shift patterns and improve model productiveness across both seasonal and non-seasonal time periods.
+We explore and examine language temporal shifts on seven bilingual corpora from social media to news articles in Section~\ref{chap3:sec:data}. 
+As described in Section~\ref{chap3:sec:fa}, We have shown both qualitatively and quantitatively that our proposed FEDA and diachronic word embedding are capable of discovering language shift patterns and improve model productiveness across both seasonal and non-seasonal time periods.
+We proposed a new framework to train diachronic word embedding and evaluated the embedding model with existing methods.
+The Section~\ref{chap3:sec:model} presented a new time-driven classification model that encodes documents through the diachronic word embedding. 
 
-Our multi-aspect analysis has demonstrated two empirical findings:
-\begin{itemize}
-    \item First, evaluation will be most accurate if the test data is as similar as possible to whatever future data the classifier will be applied to, and one way to achieve this is to select test data from the chronological end of the corpus, rather than randomly sampling data without regard to time.
-    \item Second, we observed that performance on future data tends to increase when hyperparameter tuning is conducted on later data; thus, we also recommend sampling validation data from the chronological end of the corpus.
-\end{itemize}
