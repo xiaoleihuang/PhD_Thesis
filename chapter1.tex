@@ -1,75 +1,75 @@
 \chapter{Introduction}
 \label{chp:intro}
+
 % large
-Massive annotated text data has been becoming available allows for building document classification models in a various domains including news, scientific articles, medical records, political bills, online reviews and social media posts.
-Document classifiers automatically classify documents into categories have been widely used for surveillance and diagnosis systems in public health~\cite{lamb2013separating, de2016discovering, huang2019can, zhu2019detecting}, sentiment analysis and user attribute inference in computational social science~\cite{rosenthal2011age, yang2016hierarchical, huang2017exploring, heindorf2019debiasing}, user modeling and personalization in recommendation system~\cite{rao2010classifying, zhang2014explicit, zheng2014context, he2016ups}, and much more. 
+Massive annotated text data has been becoming available allows for building document classification models in various domains including news, scientific articles, medical records, political bills, online reviews and social media posts.
+Document classifiers automatically classify documents into categories have been widely used for surveillance and diagnosis systems in public health~\cite{lamb2013separating, de2016discovering, huang2019can, zhu2019detecting}, sentiment analysis and user attribute inference in computational social science~\cite{rosenthal2011age, yang2016hierarchical, huang2017exploring, heindorf2019debiasing}, user modeling in personalization~\cite{tang2015learning, wu2016personalized, huang2019neuraluser, pan2019social} and much more. 
 The reliability of document classifiers is crucial to the applied domains.
 
-Language varies across both demographic and temporal factors making document classifiers harder and less likely to generalize across the metadata of documents. 
+
+Language varies across document metadata including demographic and temporal factors making document classifiers harder and less likely to generalize. 
 However, models for \textit{document classification}, the automatic categorization of documents into categories, typically ignore metadata attributes of documents. 
 Metadata, implicitly embedded in documents such as time, author demographic attributes (gender, age, location) and user histories, can impact on building reliable document classifiers.
-On the one hand, users are generating new contents as well as new ways to express their opinions leading to change word usage and sense over time, and different demographic groups are using written language as a marker of their own social and community identities causing expression ambiguities.
-For instance, the emoji has been reshaping how people express opinions and sentiments over years~\cite{felbo2017using}, and males and females will use same words to express opposite sentiments~\cite{volkova2013exploring}. % examples
-On the other hand, document classifiers are generally trained without considering those language variations resulting in instability of classifiers or even fairness issues, and even ignore such language variations may cause bias and discrimination to the trained document classifiers: existing research has pointed out failures of existing classifiers because of ignore the time- and demographic- sensitive attributes in social media data~\cite{gayo2011limits, gayo2013predicting}.
-We illustrate impacts of the metadata on document classifiers in Figure~\ref{chap1:fig:impact}.
+On the one hand, users are generating new content as well as new ways to express their opinions leading to change in word usage and sense over time, and different demographic groups are using written language as a marker of their own social and community identities causing expression ambiguities.
+For instance, the emoji has been reshaping how people express opinions and sentiments over the years~\cite{felbo2017using}, males and females will use the same words to express opposite sentiments~\cite{volkova2013exploring}, and users use different words to express the same sentiment and use the same words to express different meanings~\cite{oba2019modeling}. % examples
+On the other hand, document classifiers are generally trained without considering those language variations resulting in instability of classifiers or fairness issues, and even ignore such language variations may cause bias and discrimination to the trained document classifiers: existing research has pointed out failures of existing classifiers because of ignoring the time- and demographic- sensitive attributes in social media data~\cite{gayo2011limits, gayo2013predicting}.
+We illustrate how the metadata impacts document classifiers in Figure~\ref{chap1:fig:impact}.
 As a result, it is increasingly important to understand, consider and adapt the language variations into document classifiers.
 
-\begin{figure}[tb!]
+
+\begin{figure}[htp]
 \centering
 \includegraphics[width=0.55\textwidth]{images/chapter1/metadata_impact.pdf}
-\caption{Illustration of how the metadata will impact on performance of document classifiers.}
+\caption{Illustration of how the two metadata will impact on performance of document classifiers. The $\tilde{x}$ indicates the language distributions are different from $x$.}
 \label{chap1:fig:impact}
 \end{figure}
 
-
 \section{Contributions and Thesis Overview}
 
-In light of these opportunities and challenges, this thesis proposes methods to adapt temporality and user factors (both demographic factors and user histories) into document classifiers using \textit{domain adaptation}.
-The primary contribution of this thesis is to introduce various novel domain adaptation approaches and demonstrate how they can be applied for training more robust and reliable document classifiers towards the metadata.
-We propose to treat each variable of individual metadata type as a domain. For example, for the time, we can treat each year or season as a separate domain; for the demographic factors, we can treat male and female as different domains. 
-Domain adaptation is a method in machine learning that learns variations between source and target domains and enables models trained on the source domain can be applied on the target domain. 
-Figure~\ref{chap1:fig:da} presents the general idea of how domain adaptation works: to align source and target domains, domain adaptation learns a function to map document representations from the target to the source domain.
-
-
-\begin{figure}[b!]
+\begin{figure}[htp]
 \centering
 \includegraphics[width=0.55\textwidth]{images/chapter1/da_illu.pdf}
 \caption{Illustration of how the domain adaptation works.}
 \label{chap1:fig:da}
 \end{figure}
 
+
+In light of these opportunities and challenges, this thesis proposes methods to treat temporality and user factors as domains (2012 vs. 2016 and male vs female domains) and then adapt the metadata into document classifiers using \textit{domain adaptation}.
+Domain adaptation is a method in machine learning that learns variations between source and target domains and enables models trained on the source domain can be applied to the target domain. 
+Figure~\ref{chap1:fig:da} presents the general idea of how domain adaptation works: to align source and target domains, domain adaptation learns a function to map document representations from the target to the source domain.
+The primary contribution of this thesis is to introduce various novel domain adaptation approaches and demonstrate how they can be applied for training more robust and reliable document classifiers towards the metadata.
+We propose to treat each variable of individual metadata type as a domain. For example, for the time, we can treat each year or season as a separate domain; for the demographic factors, we can treat male and female as different domains. 
+
 In this thesis, we follow the route towards generalizing and personalizing document classifiers by adapting metadata of documents.
 First, we start with backgrounds and applications of domain adaptation.
 Second, to integrate temporal and demographic factors into classifiers, this thesis focuses on two types of adaptation: 1) temporality adaptation and 2) user factor adaptation.
 We explore the NLP ethic and fairness issues and propose using domain adaptation to reduce biases of document classifiers in the hate speech detection task.
-We provide the detailed overview as follows:
+We provide a detailed overview as follows:
 
-\paragraph{Chapter~\ref{chp:background}} summarizes concepts and backgrounds of document classification, domain adaptation. We start with general discussion of the document classification task. We then provide important background on domain adaptation in this chapter including an overview of several existing domain adaptation models. The chapter introduces how language varies across two metadata factors, temporality and user. Finally, we present impacts of the two factors on both model performance and fairness.
+\paragraph{Chapter~\ref{chp:background}} summarizes concepts and backgrounds of document classification and domain adaptation. We start with a general discussion of the document classification task. We then provide the important background of domain adaptation in this chapter including an overview of several existing domain adaptation models. The chapter introduces how language varies across the temporality and user factors. Finally, we discuss the impacts of the two factors on both model performance and fairness.
 
-\paragraph{Chapter~\ref{chp:temporality}} illustrates and summarizes the work we have done on the temporality adaptation. We present two temporality adaptation methods via feature augmentation and diachronic word embedding to learn and model the temporal variations in documents. With considering the temporal factor into document classifiers, we show our proposed methods can improve the classification performance. This chapter is based on the published work of \cite{huang2018examining, huang2019neural}.
+\paragraph{Chapter~\ref{chp:temporality}} illustrates and summarizes the work we have done in the temporality adaptation. We present two temporality adaptation methods via feature augmentation and diachronic word embedding to learn and model the temporal variations in documents. By considering the temporal factor into document classifiers, we show our proposed methods can improve the classification performance. This chapter is based on the published work of \cite{huang2018examining, huang2019neural}.
 
-\paragraph{Chapter~\ref{chp:user}} presents our work on the user factor adaptation. To build models and conduct the experiments, we first introduce and publicize a new datasets with author-level attributes. We then apply the multitask learning framework in training document classifiers aiming to learn domain invariant document representations. Finally, we show the user factor adaptation can generalize and improve classification models. This chapter is based on the published work of \cite{huang2019neuraluser}.
+\paragraph{Chapter~\ref{chp:user}} presents our work on the user factor adaptation. We propose two approaches to adapt user factors under the multitask learning framework. For the user demographic factor, we first introduce and publicize a new dataset with author-level attributes. We then train a classifier by both demographic attributes and document class predictions. We apply the multitask learning framework in training document classifiers aiming to learn domain invariant document representations. Finally, we show the user factor adaptation can generalize and improve classification models. To adapt user latent factors in user history, we train a user embedding model via the multitask learning framework jointly learning both user interests and language usage. We evaluate the user embedding model on an intrinsic task, clustering, and an extrinsic task, document classification. Experiments show that the adaptation method can better model semantic variations of the user language usage. This chapter is based on the published work of \cite{huang2019neuraluser, huang2020user}.
 
-\paragraph{Chapter~\ref{chp:fairness}} illustrates how user factors can cause fairness issues for document classifiers by a new corpora with user demographic attributes. This chapter focuses on biases of document classifiers on the author-level attributes (gender, race, age and location). We propose a multilingual hate speech dataset, which each document associates with author-level attributes. The chapter explores fairness issues of document classifiers on both English and other languages. We propose a simple and standard feature augmentation method to reduce biases of document classifiers. 
+\paragraph{Chapter~\ref{chp:fairness}} illustrates how user factors can cause fairness issues of document classifiers on the author-level attributes (gender, race, age and location). We propose a multilingual hate speech dataset, which each document associates with author-level attributes. The chapter examines classification performance and biases of document classifiers on both English and other languages. We then propose a simple and standard feature augmentation method to reduce biases of document classifiers on the English data. 
 This chapter is based on the published work of \cite{huang2020multilingual}.
-
-% \paragraph{Chapter~\ref{chp:user}.} The last chapter presents my future work on embed both temporal and demographic factors into document classifiers using \textit{dynamic user embeddings} and \textit{demographic user embeddings} to personalize and generalize document classifiers. The proposed \textit{dynamic user embeddings} aim to learn user demographic factors and behaviors over time and \textit{demographic user embeddings} use multitask framework to jointly model user demographic and document predictions. We plan to evaluate the methods in both supervised and unsupervised settings and finalize this chapter with timelines.
 
 \paragraph{Chapter~\ref{chp:conclusion}} concludes the thesis with contributions and discussions and suggests future research directions.
 
 \section{Other Research Work}
 
 My research applies machine learning models on solving several health issues, such as suicide ideation analysis, vaccination surveillance, alcoholism diagnosis and COVID-19. 
-The work collect and publicize new text datasets from online resources. 
+My work also collects and publicizes new text datasets from online resources. 
 However, the massive datasets prevent us from obtaining insights in a short time.
-In my applied publications, the proposed document classification models extract and summarize information from the millions of documents. 
+I built and applied document classifiers to extract and summarize information from the millions of documents. 
 The following will briefly go through the applications with references.
 
 % applications in public health
-Social media sites provide a low-cost and fast accessible way to understand public health related opinions and behaviors. \cite{huang2017examining, huang2019can} built several document classifiers and applied them to examine and analyze behavioral patterns regarding influenza vaccinations from Twitter across three dimensions: temporality (by week and month), geography (by US state and region) and demography (by gender).
-Suicide is a leading cause of death worldwide. \cite{huang2017exploring} explore demographic and geographic composition of suicidal users by conducting text analysis of their posts between 2011 and 2016, which were collected in a novel datasets from Sina Weibo, akin to Twitter.
-COVID-19 related information has overwhelmed online social media, however, links of information fail to be rated for its credibility. \cite{broniatowski2020covid, huang2020coronavirus} introduce a Twitter datasets of COVID-19 and find a large increase in the proportion of state-sponsored propaganda among the less credible URLs.
+Social media sites provide a low-cost and fast accessible way to understand public-health-related opinions and behaviors. \cite{huang2017examining, huang2019can} built several document classifiers and applied them to examine and analyze behavioral patterns regarding influenza vaccinations from Twitter across three dimensions: temporality (by week and month), geography (by US state and region) and demography (by gender).
+Suicide is a leading cause of death worldwide. \cite{huang2017exploring} explored the demographic and geographic composition of suicidal users by conducting text analysis of their posts between 2011 and 2016, which were collected in a novel datasets from Sina Weibo, akin to Twitter.
+COVID-19 related information has overwhelmed online social media, however, links of information failed to be rated for its credibility. \cite{broniatowski2020covid, huang2020coronavirus} introduced a Twitter dataset of COVID-19 and found a large increase in the proportion of state-sponsored propaganda among the less credible URLs.
 
 Nonetheless, classification models can face challenges in different scenarios, especially in dialogue and multilingual scenarios. \cite{huang2018modeling} explored temporal shifts of user intentions in the alcoholism diagnosis and further demonstrated that temporality can improve classification model performance for medical diagnosis in the dialogue scenario.
-Social media sites provide rich text corpora for different languages, however, the low computational resources of non-English languages prevent mining wider information coverage. 
-\cite{huang2019matters} proposed cross-lingual transfer methods that only train sequential classification models on English corpora and apply the models on the other low-resourced languages.
+Social media provides rich text corpora for different languages, however, the low computational resources of non-English languages prevent mining wider information coverage. 
+\cite{huang2019matters} proposed cross-lingual transfer methods that only train sequential classification models on English corpora and apply the models on the other low-resource languages.

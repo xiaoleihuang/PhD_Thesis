@@ -39,7 +39,7 @@
 \advisor{Prof.}				%  #1 {title}
 	{Robin Burke}			%  #2 {name}
 
-\reader{Dr. Michael Paul}		%  2nd person to sign thesis
+\reader{Dr. Michael J. Paul}		%  2nd person to sign thesis
 \readerThree{Prof. James H. Martin}		%  3rd person to sign thesis
 \readerFour{Prof. Mark Dredze}		%  4th person to sign thesis
 \readerFive{Prof. Byron Wallace}		%  5th person to sign thesis
@@ -47,17 +47,18 @@
 
 \abstract{
 
-Metadata, implicitly embedded in documents such as time, gender, age, location, and user history, impacts performances of document classifiers. For example, word sense, usage and context shift over periods of time, and males and females express sentiment differently. However, models for document classification, the automatic categorization of documents into categories, typically ignore metadata attributes of documents. 
-In this thesis, we propose to use domain adaptation to treat each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporality and user factors into document classifiers. To build reliable classifiers, we develop two types of adaptations that model the metadata into document representations. 
+Metadata, implicitly embedded in documents such as time, gender, age, location and user history, can cause language variations and further impact performances of document classifiers. For example, word sense, usage and context shift over periods of time, and males and females express sentiment differently. However, models for document classification, the automatic categorization of documents into categories, typically ignore metadata attributes of documents. 
+In this thesis, we focus on two document metadata, temporality and user factors, including demographic attributes, user profiles and interests.
+We propose to use domain adaptation by treating each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporality and user factors into document classifiers. 
+The thesis develops two types of adaptation approaches that leverage the metadata to augment document representations and build reliable classifiers.
 
-First, we propose the \textit{temporality adaptation} that explicitly incorporates time into representation learning and modeling processes via feature augmentation and diachronic word embedding. We particularly consider a corpus that spans over a series of temporal periods and a classifier that is trained during one time period and tested during future time periods. We apply a feature augmentation method that extracts and builds time-independent document representations. We then propose an end-to-end neural temporal adaptation model that learns the temporal factor from diachronic word embedding to a time-drive learning neural framework.
+First, we propose the \textit{temporality adaptation} that explicitly incorporates time into representation learning and modeling processes via feature augmentation and diachronic word embedding. We primarily consider a corpus that spans over a series of temporal periods and a classifier that is trained during one time period and tested during future time periods. We apply a feature augmentation method that extracts and builds time-independent document representations. We then develop an end-to-end temporal adaptation model that learns the temporal factor from diachronic word embedding to a time-driven learning neural framework.
 
-Second, we propose the \textit{user factor adaptation} that models user demographic attributes and histories into document classifiers. 
-We propose a multitask framework to jointly model the demographic factors and document categories, where a document classifier receives optimization feedback from both document class and demographic factor predictions.
-To adapt user histories into document classifier, we further develop a user embedding model that jointly learns user word usage and purchasing behaviors and personalize document representations with the learned embeddings of user histories. 
+Second, we propose the \textit{user factor adaptation} that models user demographic attributes and interests into document classifiers. 
+We propose a multitask framework to jointly model the demographic factors and document categories, where document representations benefit from joint optimizations of document class and demographic factor predictions.
+To adapt latent user factors into document classifiers, we further develop a user embedding model that jointly learns user word usage and interests and personalizes document representations for the classifiers.
 
-Finally, we release a multilingual hate speech corpus with four author-level demographic attributes, and we explore how demographic variations can cause fairness and ethic issues. We evaluate fairness issues of several document classification models on the multilingual corpus. Following this, we further explore to reduce demographic biases of the hate speech classifiers via a standard feature augmentation method.
-
+Finally, we release a multilingual hate speech corpus with four author-level demographic attributes, and we explore how demographic variations can cause fairness and ethical issues. We evaluate the fairness issues of several document classification models on the multilingual corpus. Following this, we design a standard feature augmentation method to reduce demographic biases of the hate speech classifiers.
 }
 
 \dedication[Dedication]{	% NEVER use \OnePageChapter here.
@@ -65,28 +66,32 @@ Finally, we release a multilingual hate speech corpus with four author-level dem
 	}
 
 \acknowledgements{	%\OnePageChapter	% *MUST* BE ONLY ONE PAGE!
-    This thesis can not be done with supports from my thesis committee members.
+    This thesis can not be done with supports from my thesis committee members and NSF IIS-1657338.
     I want to give my highest gratitude to my Ph.D. advisor, Michael J. Paul.
-    He is a fantastic advisor that provides me with his generous support and endless help but not pressure or constraint along my four years of enjoyable and delightful study.
+    He is a fantastic advisor who provides me with his generous support and endless help but not pressure or constraint along my four years of enjoyable and delightful study.
     Michael sets me an awesome example as a nice and good advisor that I could follow in the future.
     I really appreciate Mark Dredze's guidance and support on my research direction and career development. 
     Mark involved me in several projects through past years and gave me a really valuable visiting chance at the Johns Hopkins University. 
-    His technical depth, application broadness as well as balance between work and family is a life-long inspiration for me.
-    I want to thank Robin D. Burke for his feedback and help on my research and career development. 
+    His technical depth, application broadness as well as balance between work and life is a life-long inspiration for me.
+    I want to thank Robin Burke for his feedback and help on my research and career development. 
     I am really inspired by his research and work experience from industry to academia.
     I had the fortune to have James H. Martin as my thesis committee member.
     Jim inspired me in many ways in both research and education that rebuilt my confidence when I started my doctoral study. 
-    I am very lucky to have Byron Wallace in my thesis committee. I first met him when I applied the doctoral study at UT-Austin. 
-    His passion in research and applications has deeply influenced my career goals and research agenda. 
+    I first met Byron Wallace when I applied for the doctoral study at UT-Austin.
+    I am glad and lucky to have him in my thesis committee.
+    His passion in research and health-related applications has deeply influenced my career goals and research agenda.
     
-    Beyond my thesis committee, I was fortunate to have a number of collaborations with people from both academia and industry. I enjoyed insightful discussions with David Broniatowski, Amelia Jamison, Sandra C. Quinn on multiple public health projects. 
+    Beyond my thesis committee, I was fortunate to have a number of collaborations with people from both academia and industry. 
+    I enjoyed insightful discussions with David Broniatowski, Amelia Jamison, Sandra C. Quinn on multiple public health projects. 
     It was really lucky to have my first industrial internship at Adobe Research with Franck Dernoncourt and Walter Chang. I really appreciate their generous support and continuous collaborations since then. 
     I am lucky to spend two summers at the USC, where I worked with Stefan Scherer, Jonathan May and Nanyun Peng. I benefited a lot from helpful and encouraging discussions with them. 
+    Nanyun sets a role model for me to pursue an academic career.
     It was an exciting internship experience at Amazon Lab 126 with Minmin Shen and Angeliki Metallinou. The unique project broadened my eyes and enhanced my skills of parallel GPUs.
-    The summer internship experience can not be so enjoyable without my friends including but not limit to: Anthony Michael Colas, Logan Lebanoff, Lixing Liu and Jason Wu.
+    The summer internship experience can not be so enjoyable without my friends including but not limit to: Anthony Michael Colas, Logan Lebanoff, Lixing Liu and Jason Wu. My apologies for any omissions.
     
-    I was honored to get into the PhD program at CU Boulder and benefited from the collaboration and advice from many faculty over the years, including but not limit to Jordan Boyd-Graber, Leysia Palen, Jed Brubaker, Stephen Voida, Danielle Szafir, Martha Palmer, Amy Voida and Casey Fiesler. I also owe a lot to my peer colleagues whose important discussions have helped me along the way: Linzi Xing, Ben Niu, Ashlynn Daughton, Shudong Hao, Dianna Radpour, Yoshinari Fujinuma, Matt Whitlock, Wendy Norris, Alvin Grissom II and Wei-Lun Harry Chao.
-    My research career started by the collaborations with David Chiu and Tingshao Zhu when I was in China. Their insightful discussions and helpful guidance initialized and initialized my career in NLP.
+    I was honored to get into the PhD program at CU Boulder. 
+    I benefit from the collaboration and advice from many faculty over the years, including but not limit to Leysia Palen, Jed Brubaker, Stephen Voida, Jordan Boyd-Graber (now at UMD), Danielle Szafir, Martha Palmer, Amy Voida and Casey Fiesler. I also owe a lot to my peer colleagues whose important discussions have helped me along the way: Linzi Xing, Ben Niu, Ashlynn Daughton, Shudong Hao, Dianna Radpour, Yoshinari Fujinuma, Matt Whitlock, Wendy Norris, Alvin Grissom II and Wei-Lun Harry Chao.
+    My research career started by the collaborations with David Chiu and Tingshao Zhu when I was in China. Their insightful discussions and helpful guidance initialized my career in NLP.
     
     Finally, I am grateful for the support from my family and loved ones over the years, especially my parents Huang S.M. and Zhang Q.L. who gave me so much encouragement and shared me with their valuable experience; Yang T.T., who lighted up my enthusiasm for life. 
 }
@@ -117,8 +122,8 @@ Finally, we release a multilingual hate speech corpus with four author-level dem
 
 %%%%%%%%%   then the Bibliography, if any   %%%%%%%%%
 \bibliographystyle{acm}	% or "siam", or "alpha", etc.
-\nocite{*}		% list all refs in database, cited or not
 \bibliography{refs}		% Bib database in "refs.bib"
+
 
 %%%%%%%%%   then the Appendices, if any   %%%%%%%%%
 % \appendix
