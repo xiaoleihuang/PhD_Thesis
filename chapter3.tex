@@ -4,7 +4,7 @@
 \section{Introduction}
 Language changes and varies over time,
 which can cause a degradation of performance in
-natural language processing models over time.
+natural language processing (NLP) models over time.
 For example, document classifiers are typically trained on historical data and tested on future data, where the performance tends to be worse.
 Recent research has shown that document classifiers can become more stable over time when trained in ways that specifically account for temporal variations~\cite{he2018time}.
 We refer to this task of accounting for such variations during training as {\em temporality adaptation}.
@@ -433,7 +433,7 @@ The year is the time information when the word and section label were generated.
 We adjust the year label to the time domain schema.
 For example, if the year is 2013, we will convert it to 2011-13.
 
-$$F_\beta = \frac{(\beta^2 + 1) * P * R}{\beta^2*P + R}$$
+$$F_\beta = \frac{(\beta^2 + 1) * Precision * Recall}{\beta^2*Precision + Recall}$$
 
 We use the F$_\beta$ to measure the effectiveness of the embedding models on the test set.
 By using \textit{SpectralClustering} in scikit-learn~\cite{pedregosa2011scikit}, we first apply the clustering algorithm to group the test words with three different cluster sizes, 10, 15 and 20. 
@@ -682,7 +682,7 @@ with the RCNN generally outperforming the other baselines.
 This indicates that the temporal factor can potentially improve the performance of document classification, and that domain adaptation is a possible approach to temporality adaptation. 
 
 \paragraph{Significance analysis.} 
-To verify the improvements of our proposed method NTAM compared to baselines, we conduct a significance analysis to compare our proposed model with the RCNN, which is the closest model to ours. We follow \cite{berg2012empirical} and bootstrap sample 50 pairs of test datasets with replacement. We keep the same data size as the previous experiments in the Table~\ref{chap3:tab:results}. We then use the same previous parameters and re-conduct the classification experiments. We format the experimental results as two lists of scores. We conduct a paired t-test to test the null hypothesis that our proposed model does not differ significantly from the RCNN. The test presents a significant result with t(95) = 3.258 and p = 0.00119. The result suggests rejecting the null hypothesis at a 95\% confidence level.
+To verify the improvements of our proposed method NTAM compared to baselines, we conduct a significance analysis to compare our proposed model with the RCNN, which is the closest model to ours. We follow \cite{berg2012empirical} and bootstrap sample 50 pairs of test datasets with replacement. We keep the same data size as the previous experiments in the Table~\ref{chap3:tab:results}. We then use the same previous parameters and re-conduct the classification experiments. We format the experimental results as two lists of scores. We conduct a paired t-test to test the null hypothesis that our proposed model does not differ significantly from the RCNN. The test presents a significant result with t(95) = 3.258 and p-value = 0.00119. The result suggests rejecting the null hypothesis at a 95\% confidence level.
 
 
 \subsection{Effectiveness of Diachronic Embeddings}

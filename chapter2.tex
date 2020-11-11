@@ -1,7 +1,7 @@
 \chapter{Background}
 \label{chp:background}
 
-This chapter provides the necessary background for this dissertation, including the document classification task, methods of domain adaptation, problem settings of language variations.
+This chapter provides the necessary background within natural language processing (NLP) for this dissertation, including the document classification task, methods of domain adaptation, problem settings of metadata variations in language.
 This chapter organizes sections as follows:
 
 Section~\ref{chap2:sec:doc_clf} presents a standard pipeline of building document classification models.
@@ -14,8 +14,9 @@ The fundamental methods serve as stepstones for new models that will be proposed
 
 Section~\ref{chap2:sec:time} and Section~\ref{chap2:sec:demographic} demonstrate the challenges of handling language variations across both temporal and demographic factors, which can cause performance drops and prevent model generalizations for the document classification task.
 For the temporality, I discuss existing methods that model the temporal factor into neural representations, the diachronic word embedding. 
-For the user factor, I present existing methods of adapting user factors. I introduce potential fairness issues of document classifiers caused by user demographic factors. 
-The discussions of the language variations and existing methods serve to facilitate introductions of our proposed adaptation methods on both temporal and user factors.
+For the user factor, I present existing methods of user factor adaptation. 
+While the user factors can improve model performance, I introduce potential fairness issues of document classifiers caused by the user demographic factors.
+The discussions and introduction serve to facilitate introductions of our temporality and user factor adaptation methods in the following chapters.
 
 
 \section{Document Classification}
@@ -33,28 +34,28 @@ For languages like Chinese, we can use segmentation tools~\cite{sun2012jieba} to
 While most tasks focus on monolingual settings that train and test on the same languages, for cross-lingual settings, translation is an important strategy.
 Additionally, preprocessing steps are important for privacy, anonymity and fairness. 
 For example for Twitter data, to protect user privacy, we can replace user name, URL and sensitive words with dummy words. 
-Research shows that replacing sensitive words in the preprocessing step can significantly reduce the bias of classifiers~\cite{dixon2018measuring}.
+Research shows that replacing sensitive words in the preprocessing step can significantly reduce the demographic bias of classifiers~\cite{dixon2018measuring}.
 To encode the $N$ document labels, we either choose to use sparse categorical classes such as [0, 1, ..., N-1] or one hot encoding which has one 1 and the other N-1 scalars as zeros in a numerical vector. 
 
 
 \subsection{Traditional Classifiers}
 
 Traditional classifiers including logistic regression and support vector machine (SVM) require extensive labors in designing feature sets.
-In this thesis, we mainly use three types of document features: n-gram, topic model, syntax.
+In this thesis, we mainly use three types of document features: n-gram, topic model and syntax.
 
 \begin{enumerate}
-\item \textit{N-gram} extracts token sequences and counts their occurrence. The token sequences have different combinations of lengths, such as unigram, bi-gram, or tri-gram. The count values can be normalized via TF-IDF.  
+\item \textit{N-gram} extracts token sequences and counts their occurrence. The token sequences have different combinations of lengths, such as unigram, bi-gram, or tri-gram. The count values can be normalized via term frequency–inverse document frequency (TF-IDF), which leverages the importance of features by lowering weights of high frequent features and improving weights of rare features.  
 \item \textit{Topic model}~\cite{blei2003latent} views each document has a distribution over $k$ topics and drive the topic features from each document. The topic feature size is the number of topics, $k$. 
 \item \textit{Syntax} can be phonological, morphological, or semantic features. For example, a common feature is a part-of-speech (POS) tag by counting the number of each tag category in every document. 
 \end{enumerate}  
 
 
-We train a supervised classifier by the input feature, $x$, and its associated annotations, $y$. The feature is a D-dimensional vector of numbers to describe the properties of an object, such as length of sentence. The annotations are vectorized to a categorical or nominal variable from some finite set, $y_i \in {1, ..., C}$, where $C$ is the number of document classes. We use the features and labels to train a document classifier, $\hat{y}_i = \theta(X_i)$, by maximizing the log probability, $argmax\sum_{i=1}^nlog P(y_i | x_i; \theta)$, where the $i$ the index of data instance, the $\hat{y}_i$ is the predicted value by the classifier, the $\theta$ refers to the classification function. The training process is that we feed the vectorized training data, $x$, to the classifier $\theta$ to learn the optimum values $w$. Through the model, we can choose the most probable category of the input data.
+We train a supervised classifier by the input feature, $x$, and its associated annotations, $y$. The feature is a D-dimensional vector of numbers to describe the properties of an object, such as length of sentence. The annotations are vectorized to a categorical or nominal variable from some finite set, $y_i \in {1, ..., C}$, where $C$ is the number of document classes. We use the features and labels to train a document classifier, $\hat{y}_i = \theta(x_i)$, by maximizing the log probability, $argmax\sum_{i=1}^nlog P(y_i | x_i; \theta)$, where the $i$ the index of data instance, the $\hat{y}_i$ is the predicted value by the classifier, the $\theta$ refers to the classification function. The training process is that we feed the vectorized training data, $x$, to the classifier $\theta$ to learn the optimum values. Through the model, we can choose the most probable category of the input data.
 
 
 \subsection{Neural Classifiers}
 
-Neural classifiers have shown their premier performance over traditional classifiers in document classification.
+Neural classifiers have shown their premier performance over traditional classifiers in document classification~\cite{mikolov2013distributed, kim2014convolutional}.
 This section first introduces neural representations of words, word embedding.
 Then it presents three types of neural models, convolutional neural network (CNN), recurrent neural network (RNN) and bidirectional encoder representations from transformer (BERT).
 
@@ -76,9 +77,9 @@ We will use them extensively in the following chapters and leave out other metho
 There are two ways to train word embedding models, Skip-gram and Continuous Bag of Words (CBOW).
 We show the details of two training strategies in Figure~\ref{chap2:fig:embd}.
 
-The two methods both first randomly initialize the two embeddings, input ($W$) and output ($U$).
+The two methods both first randomly initialize the two word embeddings, input ($E$) and output ($\hat{E}$).
 The two embeddings share with the same dimensions $|V| * d$, where $|V|$ is the size of total vocabulary and $d$ is the vector dimension.
-For the CBOW, we first generate one hot encoding vector of the context words with the context windows size as $m$ and feed the vector to the input embedding $W$; we can then obtain vector representations of the context words, $W(w_{i-m}), ..., W(w_{i-1}), W(w_{i+1}), ..., W(w_{i+m})$; next, we sum and average the obtained vectors and can get $\hat{w}$; we dot product the $\hat{w}$ with $U$ ($\theta = \hat{w} \cdot U $) and feed the output $\theta$ to a softmax function; we can obtain a predicted probability vector $\hat{y} = softmax(\theta)$ over the whole vocabulary $\hat{y} \in R^{|V|}$; and finally we can optimize the model by categorical cross-entropy $H(\hat{y}, y) = -\sum^{|V|}_{i=1}y_ilog(\hat{y}_i)$.
+For the CBOW, we first generate one hot encoding vector of the context words with the context windows size as $m$ and feed the vector to the input embedding $E$; we can then obtain vector representations of the context words, $E(w_{i-m}), ..., e(w_{i-1}), e(w_{i+1}), ..., e(w_{i+m})$; next, we sum and average the obtained vectors and can get $\bar{e}$; we dot product the $\bar{e}$ with $\hat{E}$, $\bar{e} \cdot \hat{E} $, and feed the output to a softmax function; we can obtain a predicted probability vector $\hat{y} = softmax(\bar{e} \cdot \hat{E})$ over the whole vocabulary $\hat{y} \in R^{|V|}$; and finally we can optimize the model by categorical cross-entropy $H(\hat{y}, y) = -\sum^{|V|}_{i=1}y_ilog(\hat{y}_i)$.
 The key difference between the two methods is that while the CBOW uses the context to predict a word, the Skip-gram predicts the context by a word.\footnote{A detailed comparison can be referred to \url{https://cs224d.stanford.edu/lecture_notes/notes1.pdf}}
 
 However, the softmax and objective functions over the whole vocabulary $V$ consume too much computation, and therefore, we use the \textit{Negative Sampling}~\cite{mikolov2013distributed} to approximate the results and reduce the computational cost.
@@ -113,9 +114,10 @@ Then it maps the indices to a lookup table initialized by a pre-trained word emb
 The model applies 1D convolution on the document representations $A$ with zero-padding.
 The convolution operation has multiple filters with different kernel sizes $h$.
 Each filter outputs multiple screenshots, where each screenshot is a sub matrix of $A$, $A[i: i+h] \in R^{h*d}$ and the number of screenshot is $n-h+1$.
-Therefore, we can represent the output of a screenshot as $o_i = \sigma(w \cdot A[i:i+h]) + b$, where $i \in [1, n-h+1]$, $\sigma$ is an activation function and $b$ is a bias term.
+Therefore, we can represent the output of a screenshot as $o_i = \sigma(W \cdot A[i:i+h] + b)$, where $i \in [1, n-h+1]$, $\sigma$ is an activation function and $b$ is a bias term.
 Multiple screenshots represent generated features of a filter and feed to the pooling layer.
 Besides the global max pooling method shown in Figure~\ref{chap2:fig:cnn}, we also have other pooling methods such as average pooling methods.
+The core idea of the pooling layer~\cite{kim2014convolutional} is to extract one feature from each filter on document representations. 
 Finally, the classifier flattens feature representations and feeds the vector to a softmax function for predictions.
 
 While CNN enjoys its parallel processing ability, it only focuses on a limited context and can not retain the long sequential information like the Recurrent Neural Network (RNN)~\cite{goodfellow2016deep}. Next section, I will briefly introduce RNN based classifiers.
@@ -132,7 +134,7 @@ While CNN enjoys its parallel processing ability, it only focuses on a limited c
 
 A key advantage of Recurrent Neural Network (RNN) is its ability to learn long dependency sequential information. 
 We present a simple RNN model in Figure~\ref{chap2:fig:rnn}.
-The model reads the current word $w_t$ in every step $t$ and calculates its current hidden state $h_t$ by $h_t = f(h_{t-1}, w_t; W)$, where the $W$ is the weight of the function $f$.
+The model reads the current word $w_t$ in every step $t$ and calculates its current hidden state $h_t$ by $h_t = f(h_{t-1}, E(w_t); W)$, where the $W$ is the weight of the function $f$ and $E(w)$ represents an embedding vector for a word token $w$.
 We can feed the final hidden state $h$ to a softmax function for predictions.
 
 However, the simple RNN can suffer gradients vanish or explosion and hardly capture long dependencies in practice~\cite{pascanu2013difficulty}.
@@ -141,16 +143,16 @@ We will introduce two main RNN variants, Long Term Short Memory (LSTM)~\cite{hoc
 \paragraph{LSTM} is one type of RNN models~\cite{hochreiter1997long}. 
 It retains more information on contextual dependencies by using structures called \textit{gates}.
 The first gate is ``forget gate'' aiming to decide how much information we will throw away from the previous hidden state by 
-$$f_t = \theta(W_f \cdot [h_{t-1}, w_t] + b_f)$$
-where $\theta$ is sigmoid function,\footnote{The equation of sigmoid function, $\theta(x) = \frac{e^x}{e^x+1}$.} $W_f$ is the weight and $b_f$ is the bias term.
+$$f_t = \theta(W_f \cdot [h_{t-1}, E(w_t)] + b_f)$$
+where $\theta$ is sigmoid function,\footnote{The equation of sigmoid function, $\theta(x) = \frac{e^x}{e^x+1}$.} $W_f$ is the weight, $E$ is an embedding layer and $b_f$ is the bias term.
 The second gate is ``input gate'' aiming to decide how much information we will use to update the current memory by
-$$i_t = \theta(W_i \cdot [h_{t-1}, w_t] + b_i)$$
+$$i_t = \theta(W_i \cdot [h_{t-1}, E(w_t)] + b_i)$$
 , where $W_i$ and $b_i$ are the weight and bias term respectively.
-Before applying the input gate, we have to calculate the candidate memory value $\title{C}_t$ by $$\title{C}_t = tanh(W_c \cdot [h_{t-1}, w_t] + b_c)$$.
+Before applying the input gate, we have to calculate the candidate memory value $\title{C}_t$ by $$\title{C}_t = tanh(W_c \cdot [h_{t-1}, E(w_t)] + b_c)$$.
 Now, it is time to generate the current memory by using both forget and input gates:
 $$C_t = f_t * C_{t-1} + i_t * \title{C}_t$$, which is a weighted combination of previous and new information.
 To obtain the output of the current cell, we compute the third gate ``output gate'' by:
-$$o_t = \theta(W_o \cdot [h_{t-1}, w_t], b_t)$$.
+$$o_t = \theta(W_o \cdot [h_{t-1}, E(w_t)], b_t)$$.
 Finally, we can output the hidden state by $$h_t = o_t * tanh(C_t)$$, where the $tanh$ is the activation function.
 We can view the output hidden state as a document representation and build a final prediction layer upon the representation.
 
@@ -158,12 +160,12 @@ We can view the output hidden state as a document representation and build a fin
 
 \paragraph{GRU} is a simplified version of LSTM in two aspects: fewer number of gates and no memory cell~\cite{chung2014empirical}.
 First, it merges the forget and input gates into one gate, ``update gate'' by
-$$z_t = \theta(W_z \cdot [h_{t-1}, w_t] + b_z)$$
+$$z_t = \theta(W_z \cdot [h_{t-1}, E(w_t)] + b_z)$$
 , where $\theta$ is a sigmoid function, $W$ is the function weight, $h_{t-1}$ is the previous hidden state, $w_t$ is the current input information, and $b$ is the bias term.
 Next the GRU combines the cell memory and hidden state into one hidden state by:
 $$h_t = (1-z_t) * h_{t-1} + z_t * \tilde{h}_t$$
-, where $\tilde{h}_t = tanh(W_h \cdot [r_t * h_{t-1}, w_t])$.
-The $r_t$ refers to a ``reset gate'' and calculates the gate by $r_t = \theta(W_r \cdot [h_{t-1}, w_t])$.
+, where $\tilde{h}_t = tanh(W_h \cdot [r_t * h_{t-1}, E(w_t]))$.
+The $r_t$ refers to a ``reset gate'' and calculates the gate by $r_t = \theta(W_r \cdot [h_{t-1}, E(w_t]))$.
 The reset gate decides to retain how much previous information.
 Existing empirical research finds that the GRU shows a similar performance with the LSTM while reduces computational costs because of the simplified architecture~\cite{chung2014empirical}.
 
@@ -335,7 +337,7 @@ However, each well-trained word embedding model for each time interval are not i
 The next step is to map the embedding models into the same vector space.
 The alignment function is:
 $$f(W, E_{\hat{t}}) = E_t$$
-, where $\hat{t}$ and $t$ are source and target time intervals respectively, $E$ is an embedding model, $f$ is the alignment function and $W$ is the function weight to learn.
+, where $\hat{t}$ and $t$ are source and target time intervals respectively, $E$ is an embedding model, $f$ is the alignment function and $W$ is a function weight to learn.
 This step aims to align the source ($\hat{t}$) to the target time interval ($t$).
 
 Existing methods of aligning word embeddings focus on the following three directions: \textit{incremental training}~\cite{kim2014temporal}, \textit{matrix transformation}~\cite{kulkarni2015statistically, hamilton2016diachronic, yao2018dynamic} and \textit{temporal vectorization}~\cite{rosenfeld2018deep, huang2019neural}. 
@@ -398,20 +400,21 @@ For the technical details, please refer to Section~\ref{chap2:subsec:feaaug}.
 \begin{figure}[tb!]
 \centering
 \includegraphics[width=0.85\textwidth]{images/chapter2/user-emb.pdf}
-\caption{Illustration of Training User Embeddings via Skip-gram~\cite{amir2017quantifying}. $V$ is the randomly initialized output matrix of word representations, $W$ is the randomly initialized input matrix of word representations, and $U$ is the randomly initialized matrix of user embedding.}
+\caption{Illustration of Training User Embeddings via Skip-gram~\cite{amir2017quantifying}. $\hat{E}$ is the randomly initialized output matrix of word representations, $E$ is the randomly initialized input matrix of word representations, and $U$ is the randomly initialized matrix of user embedding.}
 \label{chap2:fig:user}
 \end{figure}
 
 User embedding is to model latent human traits and behaviors and map the features into a fixed low dimensional representations~\cite{pan2019social}. 
 Common features include user-generated reviews, user profiles and networking connections. 
 Yet, not every dataset has networking connections. 
-And in this thesis, we only consider user-generated text documents and profile information.
+And in this thesis, we focus on user-generated text documents and profile information.
 To generate the user features, general approaches encode users through n-gram features~\cite{benton2016learning}, LDA~\cite{zhang2015using, ding2017multi}, Word2vec~\cite{amir2016modelling, benton2016learning, amir2017quantifying, wu2018starspace}, Doc2vec~\cite{ding2017multi, ding2018predicting}, etc.
+For example, \cite{ding2018predicting} obtains a user vector by averaging representations of the user's generated documents, which were encoded by the Paragraph2vec model~\cite{le2014distributed}.
 % The generated user features are usually multiple views of user behaviors. 
 % To map the multi-view features into a fixed representation, researchers have deployed methods including concatenation~\cite{pennacchiotti2011machine}, average~\cite{ding2017multi}, Generalized Canonical Correlation Analysis (GCCA)~\cite{benton2016learning}.
-Using Skip-gram to jointly train word and user embeddings is a common way to obtain fixed representations of users~\cite{amir2017quantifying, wu2018starspace}, as shown in Figure~\ref{chap2:fig:user}.
+Using Skip-gram to jointly train word and user embeddings is one method to obtain fixed representations of users~\cite{amir2017quantifying}, as shown in Figure~\ref{chap2:fig:user}.
 The model jointly trains two prediction tasks at the same time: predicting if the input words are mutual contexts or not and if users used the input words.
-The joint tasks aim to learn user representations $U$ from the language usage of users $W$.
+The joint tasks aim to learn user representations $U$ from the language usage of users $E$.
 
 
 \section{Demographic Bias in NLP}

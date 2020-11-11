@@ -1,12 +1,14 @@
-\chapter{NLP Ethics and Fairness}
+\chapter{Demographic Bias in Document Classification}
 \label{chp:fairness}
 
-Chapter~\ref{chp:user} shows that demographic variations exist in the language and further impact the robustness of language models.
-Recent research raises concerns that document classification models can be discriminatory and can perpetuate human biases~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, borkan2019nuanced}.
+Chapter~\ref{chp:user} shows that demographic variations exist in the language and demonstrates that adapting the user factors can generally improve classification performance.
+Recent research finds that the demographic factors can cause demographic biases, which lead to discriminatory document classifiers~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, borkan2019nuanced}.
 \textit{Fairness}-aware classifiers aim to provide fair, non-discriminatory outcomes towards people or groups of people based on their demographic attributes, such as gender or race. 
-Fairness has been defined in different ways~\cite{hardt2016equality}; for the document classification task, existing research~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, heindorf2019debiasing} has focused on \textit{group fairness}~\cite{chouldechova2018frontiers}, under which document classifiers are defined as biased if the \textit{classifiers perform better for documents of some groups than for documents of other groups}.
+Fairness has been defined in different ways~\cite{hardt2016equality, burke2020algorithmic}; for the document classification task, existing research~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, heindorf2019debiasing} has focused on \textit{group fairness}~\cite{chouldechova2018frontiers}, under which document classifiers are defined as biased if the \textit{classifiers perform better for documents of some groups than for documents of other groups}.
+The core idea of domain adaptation~\cite{daume2007frustratingly} is to learn domain-independent document classifiers.
+Therefore, this motivates us to reduce demographic biases by learning demographic-independent classifiers.
 
-This chapter examines the impacts of demographic variations in language for document classifiers in the perspectives of NLP ethics and fairness.
+This chapter examines the impacts of demographic variations in language for document classifiers in the perspectives of NLP fairness.
 We will show a standard domain adaptation method can generally reduce the demographic bias of document classifiers.
 This chapter builds on materials from \cite{huang2020multilingual}.
 
@@ -28,19 +30,20 @@ Finally, Section~\ref{chap5:sec:adaptation} handles each demographic attribute a
 
 While document classification models should be objective and independent from human biases in documents, research has shown that the models can learn human biases and therefore be discriminatory towards particular demographic groups~\cite{dixon2018measuring, borkan2019nuanced, sun2019mitigating}.
 The goal of \textit{fairness-aware} document classifiers is to train and build non-discriminatory models towards people no matter what their demographic attributes are, such as gender and ethnicity.
-Existing research~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, borkan2019nuanced} in evaluating the fairness of document classifiers focuses on the \textit{group fairness}~\cite{chouldechova2018frontiers}, which refers to every demographic group has an equal probability of being assigned to the positively predicted document category.
+% Existing research~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, borkan2019nuanced} in evaluating the fairness of document classifiers focuses on the \textit{group fairness}~\cite{chouldechova2018frontiers}, which refers to every demographic group has an equal probability of being assigned to the positively predicted document category.
 
 However, the lack of original author demographic attributes and multilingual corpora brings challenges towards the fairness evaluation of document classifiers.
 First, the datasets commonly used to build and evaluate the fairness of document classifiers obtain derived synthetic author demographic attributes instead of the original author information.
-The common data sources either derive from Wikipedia toxic comments~\cite{dixon2018measuring, park2018reducing, garg2019counterfactual} or synthetic document templates~\cite{kiritchenko2018examining, park2018reducing}.
+The common data sources either derive from Wikipedia toxic comments~\cite{dixon2018measuring, park2018reducing, garg2019counterfactual} or synthetic document templates~\cite{kiritchenko2018examining, park2018reducing, burke2018synthetic}.
 The Wikipedia Talk corpus\footnote{\url{https://figshare.com/articles/Wikipedia_Detox_Data/4054689}}~\cite{wulczyn2017ex} provides demographic information of annotators instead of the authors, Equity Evaluation Corpus\footnote{\url{http://saifmohammad.com/WebPages/Biases-SA.html}}~\cite{kiritchenko2018examining} are created by sentence templates and combinations of racial names and gender coreferences.
 While existing work~\cite{davidson2019racial, diaz2018addressing} infers user demographic information (white/black, young/old) from the text, such inference is still likely to cause confounding errors that impact and break the independence between demographic factors and the fairness evaluation of text classifiers.
+
 Second, existing research in the fairness evaluation mainly focuses on only English resources, such as age biases in blog posts~\cite{diaz2018addressing}, gender biases in Wikipedia comments~\cite{dixon2018measuring} and racial biases in hate speech detection~\cite{davidson2019racial}.
 Different languages have shown diverse patterns of linguistic variations across the demographic attributes~\cite{johannsen2015cross, huang2019neural}.
 Therefore, methods~\cite{zhao2017men, park2018reducing} to reduce and evaluate the demographic bias in English corpora may not apply to other languages. 
 For example, Spanish has gender-dependent nouns, but this does not exist in English~\cite{sun2019mitigating}; and Portuguese varies across Brazil and Portugal in both word usage and grammar~\cite{maier2014language}.
 The rich variations have not been explored under the fairness evaluation due to a lack of multilingual corpora.
-Additionally, while we have hate speech detection datasets in multiple languages~\cite{waseem2016hateful, sanguinetti2018italian, ptaszynski2017learning, basile2019semeval, fortuna2019hierarchically}, there is still no integrated multilingual corpora that contain author demographic attributes which can be used to measure group fairness.
+Additionally, while we have hate speech detection datasets in multiple languages~\cite{waseem2016hateful, sanguinetti2018italian, ptaszynski2017learning, basile2019semeval, fortuna2019hierarchically}, there is still no integrated multilingual corpora that contain author demographic attributes which can be used to measure the group fairness.
 The lack of author demographic attributes and multilingual datasets limits research for evaluating classifier fairness and developing unbiased classifiers.
 
 
