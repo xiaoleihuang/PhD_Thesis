@@ -5,8 +5,8 @@ This dissertation examined language variations across document metadata and rese
 The study explored two types of document metadata, temporality and user factor, which cause language variability and hurdle the stability of document classifiers.
 
 To combat the challenges, we have initiated two directions: \textbf{temporality} and \textbf{user factor} adaptations.
-The first direction explored learning robust document representations by modeling shifts of language distributions across time periods.
-The second direction investigated heterogeneous information of users and incorporated the knowledge to augment document representations and classifiers.
+The first direction explored learning robust document representations by modeling temporal shifts of language.
+The second direction investigated two types of user factors including demographic attributes and user interests.
 Experiments have shown that both directions can efficiently model the document metadata and improve document classifiers.
 We have released our collected datasets and code repository to facilitate more related research work.
 This chapter will conclude the dissertation by summarizing the contributions of each chapter and proposing future research directions.
@@ -14,17 +14,17 @@ This chapter will conclude the dissertation by summarizing the contributions of 
 \section{Chapter Summary}
 
 
-\textbf{Chapter~\ref{chp:temporality}} introduced the concept of \textbf{temporality adaptation}, exploring two strategies, feature augmentation and diachronic word embedding to leverage temporal signals and model semantic shifts in language. 
+\textbf{Chapter~\ref{chp:temporality}} introduced the concept of \textbf{temporality adaptation}. We explored two strategies, feature augmentation and diachronic word embedding, to leverage temporal signals, model semantic shifts in language and language conditional probability on document class. 
 This chapter made three main contributions.
 One contribution was the qualitative and quantitative analysis of how the temporal factor causes language variability and impacts classification performance from multiple aspects: word usage, topic shift and semantic change.
 The thoroughly statistical analysis provided a comprehensive way to understand fundamental elements that drive language shifts and degrade classification performance.
 Another contribution was our proposed diachronic word embedding, which vectorized temporality as a sub-token for words.
-The subword-based diachronic word embedding jointly models the time and word during training periods, which was easy for scaling to incremental training, expanding vocabulary and adjusting to colloquium languages in social media. 
+The subword-based diachronic word embedding jointly models time and word during training periods, which is easy to adapt to incremental training, expand vocabulary and adjust to colloquium languages in social media. 
 The embedding also keeps a single model for all time intervals, which reduces storage consumption.
 Our work is the first to apply the diachronic word embedding in the document classification. 
 The third contribution was our time-driven document classifier that encoded documents using the diachronic word embedding.
 By adapting the seasonal and non-seasonal temporality using diachronic word embedding and feature augmentation, 
-experiments suggest that classification performance can generally yield a large margin.
+experiments suggested that classification performance can generally yield a large margin.
 This study has demonstrated two empirical findings:
 \begin{itemize}
     \item First, the evaluation will be most accurate if the test data is as similar as possible to whatever future data the classifier will be applied to. And one way to achieve this is to select test data from the chronological end of the corpus, rather than randomly sampling data without regard to time.
@@ -34,15 +34,15 @@ This study has demonstrated two empirical findings:
 \textbf{Chapter~\ref{chp:user}} proposed two \textbf{user factor adaptation} methods under the multitask learning framework to model the author-level metadata of documents including demographic attributes and user interests.
 This chapter made three primary contributions. 
 First, the chapter released an English corpus that contains four user demographic attributes: age, country, gender, and the US region. 
-The study investigated whether documents can be predictive for the attributes, how the user factors cause demographic variations and reduce the effectiveness of classifiers from the perspectives of user word usage, topic shifts and user interests.
+The study investigated whether documents can be predictive for the attributes, how user factors cause demographic variations and reduce the effectiveness of classifiers from the perspectives of user word usage, topic shifts and user interests.
 While the study only used the released dataset to personalize document classifiers via adapting demographic factors, the dataset with author-level attributes can be a benefit in other research.
 Second, we proposed a multitask learning framework to leverage the demographic variability and learn robust document representations for classifiers. 
 The framework only requires demographic attributes during training but not testing phase, which allows for more flexible task settings when demographic labels are unavailable. 
 Third, our unsupervised user embedding jointly modeled user interests and user language using a multitask formulation.
 The formulation resulted in a shared structure across user, language and user interests.
-The structure provided a unified way to probe into user semantic variations and incorporate latent user factors to build more robust user embeddings. 
+The structure provides a unified way to probe into user semantic variations and incorporate latent user factors to build more robust user embeddings. 
 We evaluated our proposed evaluations on both intrinsic and extrinsic tasks, which yielded new insights for future assessments of user embeddings. 
-Experiments suggested that the user factor adaptation can efficiently personalize document classifiers and improve their performance.
+Experiments suggested that user factor adaptation can efficiently personalize document classifiers and improve their performance.
 
 \textbf{Chapter~\ref{chp:fairness}} examined demographic biases and how to reduce them in document classifiers. 
 The chapter released a multilingual Twitter corpus with inferred four author demographic attributes including age, gender, race/ethnicity and country for hate speech detection.
@@ -55,14 +55,13 @@ This approach provided an easy way to leverage multiple demographic attributes a
 Experiments on the English portion showed that the adaptation method effectively reduced demographic biases in the hate speech detectors on the English set while kept relative good classification performance. 
 We released our anonymized dataset and code to allow for more research exploration.
 
-
 \section{Future Work}
 
 My research has explained how language variations of the temporal and user factors influence document classifiers from multiple levels and demonstrated that adapting the document metadata is capable of improving classification performance.
 The next phase of my research agenda is to develop new models in three directions, adapting the document metadata to contextualized embeddings, modeling metadata from document to user level and integrating modalities beyond text.
 
-\paragraph{Diachronic transformers}
-aim to encode and vectorize the temporal factor into transformer style models, such as BERT~\cite{devlin2019bert}.
+\paragraph{Diachronic transformer}
+aims to encode and vectorize the temporal factor into transformer style models, such as BERT~\cite{devlin2019bert}.
 New knowledge and information are increasingly growing on the Internet, and how people perceive semantic meanings of words shift over time. 
 For example, while people linked the COVID to an alcohol brand in 2019, people will be more likely to use the word as a disease in 2020~\cite{broniatowski2020covid}. 
 And the emerging new publications on the COVID-19 are changing people's understand of the pandemic periodically.
@@ -76,13 +75,7 @@ models user behaviors over time.
 My existing research~\cite{huang2019neural} has found that how users express themselves change over time.
 The dynamic characteristic of social media data affects many downstream tasks~\cite{pan2019social}. 
 Adapting temporality is critical to many public health applications, such as suicidal ideation detection~\cite{huang2015topic, huang2017exploring} and alcoholism diagnosis~\cite{huang2018modeling}, in which the user behaviors are not static.
-The chapter \ref{chp:temporality} and \ref{chp:user} have successfully built dynamic word embedding and user embedding, and the techniques allow me for further exploration in the combined direction, dynamic user embedding.
-
-% TODO or remove
-% \paragraph{Fair-aware user representation}
-% aims to reduce biases of user representations.
-
-
+The chapter \ref{chp:temporality} and \ref{chp:user} have successfully built dynamic word embedding and user embedding, and the techniques allow me for further exploration in a combined direction, dynamic user embedding.
 
 \paragraph{Mulitmodal user modeling}
 learns user embeddings from multiple modalities, image, text and audio. 

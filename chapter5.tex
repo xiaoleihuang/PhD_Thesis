@@ -1,8 +1,8 @@
 \chapter{Demographic Bias in Document Classification}
 \label{chp:fairness}
 
-Chapter~\ref{chp:user} shows that demographic variations exist in the language and demonstrates that adapting the user factors can generally improve classification performance.
-Recent research finds that the demographic factors can cause demographic biases, which lead to discriminatory document classifiers~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, borkan2019nuanced}.
+Chapter~\ref{chp:user} shows that demographic variations exist in language and demonstrates that adapting user factors can generally improve classification performance.
+Recent research finds that demographic factors can cause demographic biases, which lead to discriminatory document classifiers~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, borkan2019nuanced}.
 \textit{Fairness}-aware classifiers aim to provide fair, non-discriminatory outcomes towards people or groups of people based on their demographic attributes, such as gender or race. 
 Fairness has been defined in different ways~\cite{hardt2016equality, burke2020algorithmic}; for the document classification task, existing research~\cite{dixon2018measuring, kiritchenko2018examining, park2018reducing, garg2019counterfactual, heindorf2019debiasing} has focused on \textit{group fairness}~\cite{chouldechova2018frontiers}, under which document classifiers are defined as biased if the \textit{classifiers perform better for documents of some groups than for documents of other groups}.
 The core idea of domain adaptation~\cite{daume2007frustratingly} is to learn domain-independent document classifiers.
@@ -15,12 +15,19 @@ This chapter builds on materials from \cite{huang2020multilingual}.
 This chapter first presents a multilingual hate speech dataset with author-level demographic annotations (Section~\ref{chap5:sec:mul_data}). 
 We combine previously published corpora labeled for Twitter hate speech recognition in English~\cite{waseem2016hateful,waseem2016you,founta2018large}, Italian~\cite{sanguinetti2018italian}, Polish~\cite{ptaszynski2017learning}, Portuguese~\cite{fortuna2019hierarchically}, and Spanish~\cite{basile2019semeval}, and publish this multilingual data augmented with author-level demographic information for four attributes: race, gender, age and country.
 The demographic factors are inferred from user profiles, which are independent of text documents, the tweets.
+
+While the data in Chapter~\ref{chap4:sec:daa} presents similar demographic attributes, the multilingual data in this chapter has several major differences, such as classification task, language coverage and research motivation.
+First, this chapter focuses on exploring demographic biases in hate speech detection, while the previous chapter focuses on the general sentiment classification.
+Second, unlike the English-only dataset in Chapter~\ref{chp:user}, this chapter covers five languages.
+Third, the dataset in this chapter aims to provide demographic information to explore demographic biases, while the demographic information is for performance improvement in Chapter~\ref{chp:user}.
+
 Section~\ref{chap5:subsec:analysis} will take an exploratory study on the language variations across demographic groups on the English dataset.
 To better understand how the demographic variations impact the fairness of document classifiers, the section examines two questions from multiple language features:
 \begin{itemize}
     \item Are Demographic Factors Predictable in Documents?
     \item Do Demographic Groups Express Document Categories Differently?
 \end{itemize}
+
 Section~\ref{chap5:sec:fair_eval} then experiments with four classification models to establish baseline levels of this corpus and evaluate the fairness performance of those document classifiers.
 Finally, Section~\ref{chap5:sec:adaptation} handles each demographic attribute as domains (female vs. male domain); and apply a domain adaptation method~\cite{daume2007frustratingly} to debias document classifiers.
 
@@ -35,7 +42,7 @@ The goal of \textit{fairness-aware} document classifiers is to train and build n
 However, the lack of original author demographic attributes and multilingual corpora brings challenges towards the fairness evaluation of document classifiers.
 First, the datasets commonly used to build and evaluate the fairness of document classifiers obtain derived synthetic author demographic attributes instead of the original author information.
 The common data sources either derive from Wikipedia toxic comments~\cite{dixon2018measuring, park2018reducing, garg2019counterfactual} or synthetic document templates~\cite{kiritchenko2018examining, park2018reducing, burke2018synthetic}.
-The Wikipedia Talk corpus\footnote{\url{https://figshare.com/articles/Wikipedia_Detox_Data/4054689}}~\cite{wulczyn2017ex} provides demographic information of annotators instead of the authors, Equity Evaluation Corpus\footnote{\url{http://saifmohammad.com/WebPages/Biases-SA.html}}~\cite{kiritchenko2018examining} are created by sentence templates and combinations of racial names and gender coreferences.
+Wikipedia Talk corpus\footnote{\url{https://figshare.com/articles/Wikipedia_Detox_Data/4054689}}~\cite{wulczyn2017ex} provides demographic information of annotators instead of the authors, Equity Evaluation Corpus\footnote{\url{http://saifmohammad.com/WebPages/Biases-SA.html}}~\cite{kiritchenko2018examining} are created by sentence templates and combinations of racial names and gender coreferences.
 While existing work~\cite{davidson2019racial, diaz2018addressing} infers user demographic information (white/black, young/old) from the text, such inference is still likely to cause confounding errors that impact and break the independence between demographic factors and the fairness evaluation of text classifiers.
 
 Second, existing research in the fairness evaluation mainly focuses on only English resources, such as age biases in blog posts~\cite{diaz2018addressing}, gender biases in Wikipedia comments~\cite{dixon2018measuring} and racial biases in hate speech detection~\cite{davidson2019racial}.
@@ -120,10 +127,10 @@ plus the label distribution (HS Ratio, percent of documents labeled positive for
 \label{chap5:tab:corpus}
 \end{table}
 
-We show the corpus statistics in Table~\ref{chap5:tab:corpus} and summarize the full demographic distributions in Table~\ref{chap5:tab:user}. 
+We show corpus statistics in Table~\ref{chap5:tab:corpus} and summarize the full demographic distributions in Table~\ref{chap5:tab:user}. 
 The binary demographic attributes (age, country, gender, race) can bring several benefits. 
 First, we can create comparatively balanced label distributions. 
-We can observe that there are differences in the race and gender among Italian and Polish data, while other attributes across the other languages show comparably balanced demographic distributions.
+We observe that there are differences in the race and gender among Italian and Polish data, while other attributes across the other languages show comparably balanced demographic distributions.
 Second, we can reduce errors inferred from the Face++ on coarse labels.
 Third, it is more convenient for us to analyze, conduct experiments and evaluate the group fairness of document classifiers.
 
@@ -148,7 +155,7 @@ Language & \multicolumn{2}{c|}{Age} & \multicolumn{2}{c|}{Country} & \multicolum
 \end{table*}
 
 Table~\ref{chap5:tab:corpus} presents different patterns of the corpus. 
-The Polish data has the smallest users. 
+The Polish data has the smallest number of users. 
 This is because the data focuses on the people who own the most popular accounts in the Polish data~\cite{ptaszynski2017learning}, the other data collected tweets randomly.
 And the dataset shows a much more sparse distribution of the hate speech label than the other languages.
 
@@ -219,7 +226,7 @@ We do this in two perspectives, predictability and distance, from three levels, 
 \centering
 \includegraphics[width=0.75\textwidth]{images/chapter5/predictability.pdf}
 \caption{Predictability of demographic attributes from language
-data. We show the absolute percentage improvements in accuracy over majority-class baselines. The majority-class baselines of accuracy scores are either .500 for the binary prediction. The darker color indicates higher improvements and vice versa.}
+data. We show absolute percentage improvements in accuracy over majority-class baselines. The majority-class baselines of accuracy scores are either .500 for binary prediction. The darker color indicates higher improvements and vice versa.}
 \label{chap5:fig:predictability}
 \end{figure}
 
@@ -232,17 +239,17 @@ We examine how accurately the documents can predict author demographic attribute
 
 We shuffle and split data into training (70\%) and test (30\%) sets.
 We separately train three different logistic classifiers by the three levels of features.
-We measure the prediction accuracy and show the absolute improvements of scores in Figure~\ref{chap5:fig:predictability}.
+We measure the prediction accuracy and show absolute improvements of scores in Figure~\ref{chap5:fig:predictability}.
 
 
 The improved prediction accuracy scores over majority baselines suggest that language variations across demographic groups are encoded in the text documents. 
-The results show that documents are the most predictable to the age attribute.
+The results show that documents are the most predictable to the age attribute, which indicates a high language variation exist between younger and elder user groups.
 We can also observe that the word is the most predictable feature to demographic factors,
 while the POS feature is least predictable towards the country factor.
 These suggest there might be a connection between language variations and demographic groups.
 This motivates us to further explore the language variations based on word features.
 We rank the word features by mutual information classification~\cite{pedregosa2011scikit} and present the top 10 unigram features in Table~\ref{chap5:tab:features}.
-The qualitative results show the most predictable word features towards the demographic groups and 
+Qualitative results show the most predictable word features towards the demographic groups and 
 suggest such variations may impact extracted feature representations and further training document classifiers.
 
 
@@ -261,8 +268,8 @@ suggest such variations may impact extracted feature representations and further
 \label{chap5:tab:features}
 \end{table*}
 
-The Table~\ref{chap5:tab:features} shows that when classifying hate speech tweets, the n-words and b-words are more significantly correlated with the white instead of the other racial groups.
-However, this shows an opposite view than the existing work~\cite{davidson2019racial}, which presents the two types of words that are more significantly correlated with the black.
+Table~\ref{chap5:tab:features} shows that when classifying hate speech tweets, the n-words and b-words are more significantly correlated with white instead of the other racial groups.
+% However, this shows an opposite view than the existing work~\cite{davidson2019racial}, which presents the two types of words that are more significantly correlated with the black.
 This can highlight the values of our approach that to avoid confounding errors, we obtain author demographic information independently from the user-generated documents.
 
 
@@ -271,12 +278,12 @@ This can highlight the values of our approach that to avoid confounding errors, 
 \begin{figure}[tb!]
 \centering
 \includegraphics[width=0.75\textwidth]{images/chapter5/overlaps.pdf}
-\caption{Language variations on how people express sentiment differently are calculated for each demographic factor. Darker color indicates more variations in expressing sentiments being classified.}
+\caption{Language variations on how people express sentiment differently are calculated for each demographic factor. Darker color indicates more variations in expressing sentiment being classified.}
 \label{chap5:fig:overlaps}
 \end{figure}
 
 Textual features, which are fundamental to build document classifiers, inherently vary across different demographic attributes, such as gender, age, location and political orientation~\cite{gao2015more, hinds2018demographic}.
-Expressing differently between demographic groups to show the same sentiments will confuse document classifiers and lead to biased classifiers.
+Expressing differently between demographic groups to show the same sentiment will confuse document classifiers and lead to biased classifiers.
 For example, balancing sensitive word features increase the biases of document classifiers~\cite{dixon2018measuring}.
 Therefore, this motivates us to explore if textual features that are extracted for document classifiers vary across demographic groups.
 
@@ -284,7 +291,7 @@ To compare and measure demographic variations of textual features, we conduct co
 
 \paragraph{Word-level.} For each demographic group, we extract n-gram features (same feature sets as in the previous subsection) that are most associated with the document labels. With mutual information, we select the top 1,000 features for each group. Within each demographic attribute, we then calculate the percentage of overlap across different groups (e.g., males and females in gender factor): if $F_0$ is the set of top features for one factor and $F_1$ is the set of top features for another factor, the percent overlap is calculated as $|F_0 \cap F_1|/1000$.
 
-\paragraph{POS-level.} For each demographic group, we extract and aggregate POS features (same feature sets as in the previous subsection). After normalizing the accumulated features, we can obtain POS representations for each demographic group. Within each demographic factor, we use Wasserstein distance to measure the distributional distance. Wasserstein distance or Earth Mover's distance~\cite{vallender1974calculation} is to measure the distributional differences between source and target domains in domain adaptation. In this study, we treat each demographic factor as a domain and use the Wasserstein distance to measure demographic variations.
+\paragraph{POS-level.} For each demographic group, we extract and aggregate POS features (same feature sets as in the previous subsection). After normalizing the accumulated features, we can obtain POS representations for each demographic group. Within each demographic factor, we use Wasserstein distance to measure the distributional distance. Wasserstein distance or Earth Mover's distance~\cite{vallender1974calculation} is to measure the distributional differences between source and target domains in domain adaptation. In this study, we treat each demographic factor as a domain and use Wasserstein distance to measure demographic variations.
 
 \paragraph{Topic-level.} For each demographic group, we use the trained topic model (same as in the previous subsection) to extract and calculate the average topic distribution across documents from that group. Then within each demographic factor, we measure language variations across demographic groups by Wasserstein distance. 
 
@@ -293,8 +300,8 @@ To measure fairly expression variations, we randomly sample two groups of docume
 We calculate the overlaps and distances on the randomly sampled sets. 
 We then compare percentage differences of the overlaps and distance scores between the demographic factors and the randomly selected sets: if $S_d$ is the overlap or distance score of one factor and $S_r$ is the score from the random comparison group, the percentage difference is calculated as $|S_d - S_r|/S_r$.
 Results are visualized in Figure~\ref{chap5:fig:overlaps}. 
-Higher percentage differences indicate higher variations across demographic groups express sentiments.
-We can observe there are more variations in age from the topic and POS levels.
+Higher percentage differences indicate higher variations across demographic groups.
+We observe there are more variations in age from the topic and POS levels.
 
 
 \section{Fairness Evaluation of Baseline Classifiers}
@@ -346,7 +353,7 @@ We leave the other parameters as default in the Keras~\cite{chollet2015keras}.
 
 
 \paragraph{BERT.}
-BERT is a transformer-based pre-trained language model that was well trained on multi-billion sentences publicly available on the web~\cite{devlin2019bert}, which can effectively generate the precise text semantics and useful signals.
+BERT is a transformer-based pre-trained language model that was well trained on multi-billion sentences publicly available on web~\cite{devlin2019bert}, which can effectively encode documents into representations.
 We implement a BERT-based classification model by HuggingFace's Transformers~\cite{Wolf2019HuggingFacesTS}.
 The model encodes each document into a fixed size (768) of representation and feeds to a linear prediction layer.
 The model is optimized by \texttt{AdamW} with a warmup and learning rate as $.1$ and $2e^{-5}$ respectively.
@@ -418,7 +425,7 @@ Language & Method & Acc & F1-w & F1-m & AUC \\\hline
 
 \paragraph{Performance Evaluation.}
 To measure overall performance, we evaluate models by four metrics: accuracy (Acc), weighted F1 score (F1-w), macro F1 score (F1-m) and area under the ROC curve (AUC). 
-The F1 score coherently combines both precision and recall by $2*\frac{precision*recall}{precision+recall}$.
+The F1 score combines both precision and recall by $2*\frac{precision*recall}{precision+recall}$.
 We report F1-m considering that the datasets are imbalanced.
 
 \paragraph{Fairness Evaluation.}
@@ -427,8 +434,7 @@ ED is a standard metric to evaluate fairness and bias of document classifiers~\c
 
 This metric sums the differences between the rates within specific user groups and the overall rates.
 Taking the false positive rate (FPR) as an example, we calculate the equality difference by:
-$$FPED = \sum_{d \in D}|FPR_d - FPR|$$
-, where $D$ is a demographic factor (e.g., race) and $d$ is a demographic group (e.g., white or nonwhite).
+$FPED = \sum_{d \in D}|FPR_d - FPR|$, where $D$ is a demographic factor (e.g., race) and $d$ is a demographic group (e.g., white or nonwhite).
 
 
 \subsection{Results}
@@ -614,7 +620,7 @@ We find that the age and gender both have very skewed distributions in the Itali
 Overall, our baselines provide a promising start for evaluating future new methods of reducing demographic biases for document classification under the multilingual setting.
 
 
-\section{Reduce Demographic Bias via Domain Adaptation}
+\section{Reducing Demographic Bias via Domain Adaptation}
 \label{chap5:sec:adaptation}
 
 Demographic variations root in documents, especially in social media data~\cite{volkova2013exploring, hovy2015demographic}.
@@ -654,7 +660,7 @@ To select the best models, we tune parameters by the F1-weighted score on the va
 \paragraph{GRU.} We use Keras~\cite{chollet2015keras} to implement the bidirectional recurrent neural model. 
 We optimize the model by \texttt{RMSprop}~\cite{tieleman2012lecture} and calculate the loss by \texttt{binary\_crossentropy} from the Keras.
 We set the class weight as ``auto'' and leave the other parameters as defaults.
-To keep consistent, we keep the 8K most frequent words and replace the other words as an ``unk'' token.
+To stay consistent, we keep the 8K most frequent words and replace the other words as an ``unk'' token.
 We pad each document to a length of 30.
 We train the model with 20 epochs and a batch size of 64. 
 After each training epoch, we evaluate and choose the best model on the validation set by the F1-weighted score.
@@ -666,9 +672,9 @@ Preprocessing steps can reduce the biases of document classifiers on the token l
 In this study, we try three strategies: blind, swap~\cite{park2018reducing, garg2019counterfactual} and fair~\cite{park2018reducing}). 
 
 \begin{itemize}
-    \item \textbf{Blind} is to mask out words that are associated with demographic groups~\cite{garg2019counterfactual}.
+    \item \textbf{Blind} is an approach in which we mask out words that are associated with demographic groups~\cite{garg2019counterfactual}.
     \item \textbf{Swap} is a data augmentation method for training data that identifies demographic entities and swaps them with equivalent entities from the opposite demographic group. We include swapping pairs for gender, race, age, and country.
-    \item \textbf{Fair} uses pre-trained de-biased word embeddings to improve the fairness of document classifiers. 
+    \item \textbf{Fair} is a method to reduce demographic biases by using pre-trained de-biased word embeddings . 
 We use the pre-trained word embeddings with 300 dimensions to initialize our baseline models~\cite{bolukbasi2016man}.
 \end{itemize}
 
@@ -859,5 +865,5 @@ The proposed framework for inferring the demographic attributes can be used to g
 We conducted both general and fairness evaluations of several classification models for hate speech detection. 
 Our empirical exploration indicates that language variations across demographic groups can lead to biased classifiers.
 We proposed a domain adaptation method to reduce demographic bias. 
-The experiments showed that the end-to-end domain adaptation models can outperform comparable document classification baselines on both general and fairness evaluation metrics.
+Our experiments showed that the end-to-end domain adaptation models can outperform comparable document classification baselines on both general and fairness evaluation metrics.
 Our code and anonymized data are publicly available at \url{https://github.com/xiaoleihuang/Multilingual_Fairness_LREC}.

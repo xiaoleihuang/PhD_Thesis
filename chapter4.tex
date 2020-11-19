@@ -4,13 +4,13 @@
 The previous Chapter~\ref{chp:temporality} has examined language shifts from the word, context, topic and semantic aspects and presented two temporality adaptation approaches for the document classification task. 
 It has shown the effectiveness of domain adaptation with the document metadata, time.
 In this chapter, we present methods to adapt another type of document metadata, \textbf{user factors}, into document classification models. 
-% The user factors can include user demographic factors and latent factors that can be inferred simply from an unlabeled collection of a user's posting histories~\cite{lynn2017human}.
+% user factors can include user demographic factors and latent factors that can be inferred simply from an unlabeled collection of a user's posting histories~\cite{lynn2017human}.
 
 Language varies across user factor including user interests, demographic attributes, and latent factors from user history.
-In social media, the user factors including user interests, posts and profiles that highly associate with demographic attributes and personality~\cite{lynn2017human}.
+In social media, user factors including user interests, posts and profiles that highly associate with demographic attributes and personality~\cite{lynn2017human}.
 Research shows that language usage diversifies according to online user groups~\cite{volkova2013exploring}, which women were more likely to use the word \textit{weakness} in a positive way while men were the opposite.
 The ways that users express themselves depend heavily on user demographic attributes~\cite{hovy2018improving}, interests and contexts~\cite{oba2019modeling} that users may use the same words for opposite meanings and different words for the same meaning.
-For example, online users can use the word ``fast'' to criticize the battery quality of the electronic domain or praise medicine effectiveness of the medical products; online users can use the words ``cool'' to describe a property of AC products or express sentiments.
+For example, online users can use the word ``fast'' to criticize the battery quality of the electronic domain or praise the effectiveness of medical treatments; online users can use the words ``cool'' to describe a property of AC products or express sentiment.
 Researchers found that women were more likely to use the word \textit{weakness} in a positive way, while men were more likely to use the word in a negative expression~\cite{volkova2013exploring}, and the linguistic patterns of mental health illness vary significantly across individual users~\cite{amir2017quantifying}.
 Different demographic groups and user individuals can show substantial linguistic variations, especially in online data~\cite{johannsen2015cross, goel2016social, pan2019social}. 
 These variations can affect natural language processing (NLP) models such as document classifiers.
@@ -27,7 +27,7 @@ This chapter is based on the materials from \cite{huang2019neuraluser, huang2020
 We start with a neural user factor adaptation method using demographic attributes in Section~\ref{chap4:sec:daa}.
 The section first presents an exploratory analysis of how different demographic variables are associated with documents and document labels (Section~\ref{chap4:subsec:data1}).
 Our focus is on four different demographic factors (gender, age, country, region) in four English-language social media datasets (Twitter, Amazon reviews, Yelp hotel and restaurant reviews), which contain text authored by a diversity of demographic groups.
-We then describe a neural model for the task of document classification that adapts to demographic factors using a multitask learning framework (Section~\ref{chap4:subsec:model}). Specifically, the model is trained to predict the values of the demographic attributes from the text in addition to predicting the document label. 
+We then describe a neural model for the task of document classification that adapts to demographic factors using a multitask learning framework (Section~\ref{chap4:subsec:model}). Specifically, the model is trained to predict the values of demographic attributes from the text in addition to predicting the document label. 
 Experiments on four social media datasets show that user factor adaptation is important for document classification and that the proposed model works well compared to alternative domain adaptation approaches (Section~\ref{chap4:sec:dem_exp}).
 This chapter then describes our second user factor adaptation method via multitask user embedding in Section~\ref{chap4:sec:uemb}.
 We first introduce our collected review datasets from Amazon, IMDb and Yelp in Section~\ref{chap4:subsec:data2}.
@@ -39,7 +39,7 @@ Finally, the section ends by applying the proposed user embedding models for per
 This chapter makes the following contributions:
 
 \begin{itemize}
-    \item We assemble and publish new datasets containing four demographic factors: gender, age, country and US region. The demographic attributes are carefully inferred from profile information that is separate from the text data. Our data could be used for tasks beyond this work, such as the study of algorithmic bias.
+    \item We assemble and publish new datasets containing four demographic factors: gender, age, country and US region. Demographic attributes are carefully inferred from profile information that is separate from the text data. Our data could be used for tasks beyond this work, such as the study of algorithmic bias.
     \item We experiment with neural domain adaptation models~\cite{ganin2016domain}, which may provide better performance than the simpler models used in prior work on user factor adaptation. We also propose a new model using a multitask framework with adversarial training. Our approach requires demographic attributes at training time but not at test time: we learn a single representation to be invariant to demographic changes. This approach thus requires fewer resources than prior work.
     \item We propose a multitask learning framework to learn user representations from user histories. We deploy the well-trained user and product embedding models to personalize classification models. 
     \item We further propose an unsupervised method to evaluate user embedding models via clustering user's purchasing behaviors.
@@ -51,7 +51,7 @@ This chapter makes the following contributions:
 \paragraph{Demographic prediction}
 is a common task in the NLP.
 Online generated user texts show demographic variations in the linguistic styles could be used for predicting user's personality and demographic attributes~\cite{rosenthal2011age, zhang2016predicting, hovy2018improving, wood2020using, gjurkovic2020pandora, lynn2020hierarchical}. 
-The demographic attributes impact how online users express their opinions~\cite{volkova2013exploring, hovy2015demographic, wood2017does} and show promising improvements in the text classification task~\cite{lynn2017human, lynn2019tweet}.
+Demographic attributes impact how online users express their opinions~\cite{volkova2013exploring, hovy2015demographic, wood2017does} and show promising improvements in the text classification task~\cite{lynn2017human, lynn2019tweet}.
 Existing research mainly infers user demographic attributes from a user's logs and histories.
 \cite{wood2020using} trained demographic classifiers by user's names from assembled social media datasets.
 Our work is closely related to these, as our proposed model in Section~\ref{chap4:subsec:data1} also predicts demographic variables.
@@ -77,7 +77,7 @@ This chapter personalizes classifiers in a different way (Section~\ref{chap4:sub
 
 In this section, we begin with an empirical analysis of how text is related to various demographic attributes of its authors. We first present a description of the demographic attributes. We then conduct qualitative analyses of demographic variations within the collected data on three cascading levels: document, topic and word.
 The goal is to get a sense of the extent to which language data varies across different user factors and how these factors might interact with document classification. 
-This will motivate our adaptation methods later and provide concrete examples of the user factors that we have in mind.
+This will motivate our adaptation methods later and provide concrete examples of user factors that we have in mind.
 
 
 \subsection{Data}
@@ -100,7 +100,7 @@ For the Yelp data, we removed reviews that had fewer than ten tokens or a helpfu
 
 \subsubsection{User Attribute Inference}
 
-Previous work on the user factor adaptation considered the factors of gender, age and personality~\cite{lynn2017human}.
+Previous work on user factor adaptation considered gender, age and personality~\cite{lynn2017human}.
 We similarly consider gender and age, and instead of personality, we consider a new factor of geographic location.
 For the location, we consider two granularities as different factors, country and region.
 
@@ -164,7 +164,7 @@ Restaurant & 713K & 811K & .547 & .453 & .451 & .549 & .892 & .108 & .305 & .181
 \end{table*}
 
 \subsubsection{Data Summary}
-We show the data statistics along with the full demographic distributions in the Table~\ref{chap4:tab:demographic}.
+We show data statistics along with the full demographic distributions in Table~\ref{chap4:tab:demographic}.
 While our study does not require a representative sample from the data sources,
 since our primary goal is to evaluate whether we can adapt models to different demographics,
 we observe some notable differences between the demographics of our collection and the known demographics of the sources.
@@ -190,7 +190,7 @@ instructions on how the data was collected in enough detail that the approach ca
 
 It is known that the user factors we consider are associated with variability in language, including in online content~\cite{hovy2015demographic}.
 For example, age affects linguistic style~\cite{wagner2012age},
-and language styles are highly associated with the gender of online users~\cite{hovy2018capturing}.
+and language styles are highly associated with gender of online users~\cite{hovy2018capturing}.
 Dialectical differences also cause language variation by location;
 for example, ``dese'' (these) is more common among social media users from the Southern US than other regions of the US~\cite{goel2016social}.
 
@@ -214,7 +214,7 @@ Hotel & +17.2 & +10.9 & +25.4 & +11.6 \\
 Restaurant & +19.0 & +13.2 & +32.8 & +17.5
 \end{tabular}
 }
-\caption{Predictability of user factors from language data. We show the absolute percentage of improvements in accuracy over majority-class baselines. For example, the majority-class baselines of accuracy scores are either .500 for the binary prediction or .250 for the region prediction.}
+\caption{Predictability of user factors from language data. We show absolute percentage of improvements in accuracy over majority-class baselines. For example, the majority-class baselines of accuracy scores are either .500 for the binary prediction or .250 for the region prediction.}
 \label{chap4:table:explo}
 \end{table}
 
@@ -224,8 +224,8 @@ We explore how accurately the text documents can predict user demographic factor
 We do this by training classifiers to predict each factor.
 We first downsample without replacement to balance the data for each category. We shuffle and split the data into training (70\%) and test (30\%) sets. 
 We then build logistic regression classifiers using TF-IDF-weighted 1-, 2- and 3-grams as features. 
-We use \textit{scikit-learn}~\cite{pedregosa2011scikit} to implement the classifiers and accuracy scores to measure the predictability.
-We show the absolute improvements of scores in Table~\ref{chap4:table:explo}. 
+We use \textit{scikit-learn}~\cite{pedregosa2011scikit} to implement the classifiers and accuracy scores to measure predictability.
+We show absolute improvements of scores in Table~\ref{chap4:table:explo}. 
 
 The results show that user factors are encoded in documents well enough to be predicted significantly.
 Twitter data shows the best predictability towards age, and the two Yelp datasets show strong classification results for both gender and country. We also observe that as the data size increases, the predictability of language usage towards demographic factors also increases. These observations suggest a connection between language style and user demographic factors in large corpora.
@@ -245,7 +245,7 @@ Twitter data shows the best predictability towards age, and the two Yelp dataset
 \label{chap4:fig:vary}
 \end{figure*}
 
-We additionally examine how the distribution of text content varies across demographic groups. To characterize the content, we represent the text with a topic model.
+We additionally examine how the distribution of text varies across demographic groups. To characterize the content, we represent the text with a topic model.
 We trained a Latent Dirichlet Allocation~\cite{blei2003latent} model with 10 topics using Gensim~\cite{rehurek2010software} with default parameters.
 After training the topic model, each document $d$ is associated with a probability distribution over the 10 topics. 
 The model learns a multinomial topic distribution $P(Z|D)$ from a Dirichlet prior, where $Z$ refers to each topic and $D$ refers to each document.
@@ -264,10 +264,10 @@ What we instead want to show is the degree to which the prevalence of some topic
 We see that while most topics are fairly consistent across demographic groups, most datasets have at least a few topics with large differences:
 
 \begin{itemize}
-    \item \textbf{By gender} (G), $P(Z|D, G)$. Language styles are highly associated with the gender of online users~\cite{hovy2018capturing}. The Figure~\ref{chap4:fig:vary} shows there are obvious variations between male (left stacked bar) and female (right stacked bar). The Twitter topic distributions are more on the first topic. We infer the reason might be the data is highly focused on the ``flu vaccine''.
+    \item \textbf{By gender} (G), $P(Z|D, G)$. Language styles are highly associated with the gender of online users~\cite{hovy2018capturing}. Figure~\ref{chap4:fig:vary} shows there are obvious variations between male (left stacked bar) and female (right stacked bar). The Twitter topic distributions are more on the first topic. We infer the reason might be the data is highly focused on the ``flu vaccine''.
     \item \textbf{By age} (A), $P(Z|D, A)$. Some people change their linguistic styles as they age~\cite{wagner2012age}. We could partially confirm such a claim in our collected Twitter, Amazon and Yelp hotel data, which show more fluctuations of topic distributions. However, there are fewer variances in the Yelp restaurant data. 
     \item \textbf{By country} (C), $P(Z|D, C)$. From the third column of Figure~\ref{chap4:fig:vary}, we could observe that there are more significant variations in the Yelp restaurant data than other sources. It might be that people from different countries might express opinions in different ways. 
-    \item \textbf{By region} (R), $P(Z|D, R)$. Goel et al.~\cite{goel2016social} show in online social media there are significantly different linguistic styles across different US regions. For example, due to English dialects among US regions, people in the Southern US use ``dese'' as ``these'' and people in Baltimore use ``ard'' as ``alright''. We might observe almost no variations in the Twitter data, which might be that people usually report ``flu vaccine'' in a similarly formal way. In contrast, we could observe that people talk more differently in the Amazon music data. 
+    \item \textbf{By region} (R), $P(Z|D, R)$. Goel et al.~\cite{goel2016social} show in online social media there are significantly different linguistic styles across different US regions. For example, due to English dialects among US regions, people in the Southern US use ``dese'' as ``these'' and people in Baltimore use ``ard'' as ``alright''. We observe almost no variations in the Twitter data, which might be that people usually report ``flu vaccine'' in a similarly formal way. In contrast, we could observe that people talk more differently in the Amazon music data. 
 \end{itemize}
 
 
@@ -296,7 +296,7 @@ document categories (e.g., positive or negative sentiment)
 and vary with user factors.
 
 
-To compare how word expressions vary among the demographic factors, we conduct a word-level feature comparison.
+To compare how word expressions vary among demographic factors, we conduct a word-level feature comparison.
 For each demographic group, we collect only documents that belong to that group and then calculate the n-gram features (same features as in Section~\ref{chap4:subsec:analysis}) that are most associated with the document class labels.
 Using mutual information, we select the top 1,000 features for each attribute.
 Then within each demographic factor (e.g., gender),
@@ -355,23 +355,23 @@ Instead of explicitly modeling the missing data,
 we simply sample documents where all user attributes of interest are available.
 At test time, this limitation does not apply because only the document text is required as input to the document classifier.
 
-We feed the inputs with all text documents. However, one issue with user demographic label in the real world is ``missing labels'', for example, a user might not provide any private information. Moreover, we could not do the same training steps proposed in the previous research~\cite{chen2016adversarial} that treats sampled training data as positive and test data as negative. Because they do not have a ``missing labels'' issue and in our scenario, demographic labels are well uniformly distributed in both training and test data. Therefore, we sample a batch of documents that have labels for each demographic prediction task. Noted that we only feed data to the document classifier during the test stage.
+We feed the inputs with all text documents. However, one issue with user demographic label in the real world is ``missing labels'', for example, a user might not provide any private information. Moreover, we could not do the same training steps proposed in the previous research~\cite{chen2016adversarial} that treats sampled training data as positive and test data as negative. Because they do not have a ``missing labels'' issue and in our scenario, demographic labels are uniformly distributed in both training and test data. Therefore, we sample a batch of documents that have labels for each demographic prediction task. Noted that we only feed data to the document classifier during the test stage.
 
 \paragraph{Shared Embedding Space.} 
-We use a common embedding layer for both document and demographic factor predictions. The goal is that the trained embeddings will capture the language variations that are associated with the demographic groups as well as document labels. Parameters are initialized with pre-trained embeddings~\cite{mikolov2013distributed, pennington2014glove}.
+We use a common embedding layer for both document and demographic factor predictions. The goal is that the trained embeddings will capture language variations that are associated the demographic groups as well as document labels. Parameters are initialized with pre-trained embeddings~\cite{mikolov2013distributed, pennington2014glove}.
 
 \paragraph{K+2 Bi-LSTMs.} 
 We combine ideas from two previous works on domain adaptation~\cite{liu2017adversarial, kim2017domain}. Kim et al.~\cite{kim2017domain} proposed $K$$+$$1$ Bi-LSTMs, where $K$ is the number of domains, and Liu et al.~\cite{liu2017adversarial} proposed to combine shared and independent Bi-LSTMs for each prediction task. In our model, we create one independent Bi-LSTM for each demographic domain (blue), one independent Bi-LSTM for the document classifier (orange), and one shared Bi-LSTM that is used in both the demographic prediction and document classification tasks (yellow). The intuition is to transfer learned information to one and the other through this shared Bi-LSTM while leaving some free spaces for both document label and demographic factors predictions. We then concatenate outputs of the shared LSTM with each task-independent LSTM together. This helps the text classifier capture demographic knowledge.
 
 \paragraph{Demographic Classifier.} 
-We adjust the degree to which the demographic classifiers can discriminate between attributes. 
+We adjust the degree to which demographic classifiers can discriminate between attributes. 
 To find a balance between the invariant knowledge and differences across user demographic factors, we apply domain adversarial training~\cite{ganin2016domain} (the blue block indicating the ``gradient reversal layer'') to each domain prediction task. The predictions use the final concatenated representations, where the prediction is modeled with a {softmax} function for the region and a binary {sigmoid} function for the other user demographic factors. 
 
 \paragraph{Document Classifier.} 
 We feed the concatenated outputs of the document and shared Bi-LSTMs to a single layer of the feed-forward network (the orange block indicating the ``dense layer''). Finally, the document classifier outputs a probability via a sigmoid.
 
 \paragraph{Joint Multitask Learning.} 
-We use the categorical cross-entropy loss to optimize the $K+1$ prediction tasks jointly. One question is how to assign importance to multiple tasks. Because our target is document classification, we assign a cost to the domain prediction loss ($L_{domain}$). Each prediction task has its own weight, $\alpha_k$. The final loss function is defined as $L = L_{doc} + \sum_{k=1}^K \alpha_k L_{domain, k}$. In summary, the proposed model learns and adapts to user demographic factors through three aspects: shared embeddings, shared Bi-LSTMs and joint optimization.
+We use the categorical cross-entropy loss to optimize the $K+1$ prediction tasks jointly. One question is how to assign importance to multiple tasks. Because our target is document classification, we assign a cost to the domain prediction loss ($\mathcal{L}_{domain}$). Each prediction task has its own weight, $\alpha_k$. The final loss function is defined as $\mathcal{L}= \mathcal{L}_{doc} + \sum_{k=1}^K \alpha_k \mathcal{L}_{domain, k}$. In summary, the proposed model learns and adapts to user demographic factors through three aspects: shared embeddings, shared Bi-LSTMs and joint optimization.
 
 
 \subsection{Experiments}
@@ -383,7 +383,9 @@ We experiment with document classification on our four corpora using various mod
 
 We replaced hyperlinks, usernames and hashtags with generic symbols. Documents were lowercased and tokenized using NLTK~\cite{bird2004nltk}. 
 The corpora were randomly split into training (80\%), development (10\%) and test (10\%) sets.
-We train the models on the training set and find the optimal hyperparameters on the development set. We randomly shuffle the training data at the beginning of each training epoch. The evaluation metric uses the weighted F1 score.
+We train the models on the training set and find the optimal hyperparameters on the development set. 
+We randomly shuffle the training data at the beginning of each training epoch. 
+The evaluation metric uses the weighted F1 score, which calculate an F1-score for each class and then averages F1-scores on the number of true labels of each class.
 
 %
 %\begin{table}[ht]
@@ -414,7 +416,7 @@ We trained a logistic regression classifier using the \texttt{SGDClassifier} imp
 using a batch size of 256 and 1,000 iterations. 
 
 \paragraph{CNN.} 
-We used Keras~\cite{chollet2015keras} to implement the Convolutional Neural Network (CNN) classifier described in~\cite{kim2014convolutional}. To keep consistent, we initialize the embedding weight with pre-trained word embeddings~\cite{mikolov2013distributed,pennington2014glove}. We only keep the 15K most frequent words and replace the rest with an ``unk'' token. Each document was padded to a length of 50. We fed 50 documents to the model each batch and trained for 20 epochs.
+We used Keras~\cite{chollet2015keras} to implement the Convolutional Neural Network (CNN) classifier described in~\cite{kim2014convolutional}. To stay consistent, we initialize the embedding weight with pre-trained word embeddings~\cite{mikolov2013distributed,pennington2014glove}. We only keep the 15K most frequent words and replace the rest with an ``unk'' token. Each document was padded to a length of 50. We fed 50 documents to the model each batch and trained for 20 epochs.
 
 \paragraph{Bi-LSTM.} We build a bi-directional Long Short Term Memory (bi-LSTM)~\cite{hochreiter1997long} classifier. The classifier is initialized with the pre-trained word embeddings, and we initialize training with the same parameters used for the NUFA.
 
@@ -438,7 +440,7 @@ the idea is to learn a generalized feature set that is domain invariant.
 This is the same approach we used in recent work using FEDA to adapt classifiers to temporal variations~\cite{huang2018examining}.
 
 
-\paragraph{DANN.} We consider the domain adversarial training network~\cite{ganin2016domain} (DANN) on the user factor adaptation task. We use Keras to implement the same network and deploy the same pre-trained word embeddings as in NUFA. We then set the domain prediction with the demographic factors prediction and keep the document label prediction as the default. We train the model with 20 epochs with a batch size of 64. Finally, we use the model at the epoch when the model achieves the best result on the development set for the final model.
+\paragraph{DANN.} We consider the domain adversarial training network~\cite{ganin2016domain} (DANN) on user factor adaptation. We use Keras to implement the same network and deploy the same pre-trained word embeddings as in NUFA. We then set the domain prediction as demographic factors prediction and keep the document label prediction as the default. We train the model with 20 epochs with a batch size of 64. Finally, we use the model at the epoch when the model achieves the best result on the development set.
 
 
 \paragraph{NUFA.}
@@ -497,7 +499,7 @@ For each dataset, the best score within each demographic domain is italicized; t
 \end{table}
 
 \paragraph{Single-Factor Adaptation.} We first consider user factor adaptation for each of the four factors individually. 
-Table~\ref{chap4:table:single} shows the results.
+Table~\ref{chap4:table:single} shows classification results.
 Adaptation methods almost always outperform the non-adaptation baselines;
 the best adaptation model outperforms the best non-adaptation model by $1.5$ to $5.5$ points. 
 The improvements indicate that adopting the demographic factors might be beneficial for the classifiers. User factor adaptation thus appears to be important for text classification. 
@@ -514,7 +516,7 @@ Finally, the full NUFA model most often outperforms the variants without the sha
 \paragraph{Multi-Factor Adaptation.} We experiment with adapting to all four user factors together.
 Recall that each domain prediction task in NUFA is weighted by $\alpha_k$.
 Initially, we simply used a uniform weighting, $\alpha_k = \alpha/K$,
-but we find that we can improve performance with non-uniform weighting.
+but we find that we can improve performance with non-uniform weighting that adapting each demographic factor separately yields different performance improvements.
 Because optimizing the $\alpha$ vector would be expensive, 
 we instead propose a heuristic that weighs the domains
 based on how much each domain is expected to influence the text.
@@ -553,7 +555,7 @@ In this section, we will present the second user factor adaptation method by usi
 
 User embedding, which is to learn a fixed-length representation based on multiple user posts for each user, can infer the user latent information into a unified vector space~\cite{benton2018learning, pan2019social}.
 The inferred latent representations from online content can be predictive towards user demographic attributes~\cite{volkova2015inferring, wang2018cross, farnadi2018user, lynn2020hierarchical} and behaviors~\cite{amir2017quantifying, benton2017multitask, ding2017multi}.
-By treating user embeddings as global contexts, research can combine the contexts with document representations, personalize document classification models, and further improve model performance~\cite{tang2015learning, chen2016neural, yang2017overcoming, wu2018improving, zeng2019joint, huang2019deep}.
+By treating user embeddings as global contexts, models can combine the contexts with document representations, personalize document classification models, and further improve model performance~\cite{tang2015learning, chen2016neural, yang2017overcoming, wu2018improving, zeng2019joint, huang2019deep}.
 The semantic variations across users can help models better understand online documents from a high level.
 
 However, existing user embedding methods \cite{amir2016modelling, benton2016learning, xing2017incorporating, pan2019social} mainly focus on extracting features from language itself while ignoring user interests such as topics of posted documents, types of purchased items and genres of watched movies.
@@ -567,14 +569,14 @@ We first explore how the user factor, user interests, can cause language and cla
 We then propose our user embedding model that adapts the hidden user factor using a multitask learning framework in Section~\ref{chap4:subsec:model2}.
 The current research~\cite{pan2019social} generally evaluates the user embedding via downstream tasks where the user annotations are hard to obtain. 
 For example, the MyPersonality~\cite{kosinski2015facebook} that was used in previous work~\cite{ding2017multi, farnadi2018user, pan2019social} is no longer available. 
-Research suggests that the intrinsic evaluation including clustering is better than the extrinsic evaluation including the text classification~\cite{schnabel2015evaluation}.
+Research suggests that while extrinsic evaluations can measure specific aspects of performance, such methods should not be used as a proxy to measure generic quality, and therefore intrinsic evaluation is preferable~\cite{schnabel2015evaluation}.
 Our proposed intrinsic approach can provide a new perspective for future user embedding evaluation.
 
 
 \subsection{Data}
 \label{chap4:subsec:data2}
 
-We collected English reviews of Amazon (health product), IMDb and Yelp from the publicly available sources~\cite{he2016ups, yelp_2019, imdb2020dataset}.
+We collected English reviews of Amazon (health product), IMDb and Yelp from publicly available sources~\cite{he2016ups, yelp_2019, imdb2020dataset}.
 For the IMDb dataset, we crawled movie and user metadata of review documents, including user historical reviews, user profiles, movie profiles, etc.\footnote{We included English movies produced in the US from 1960 to 2019.}
 Each review associates with its author and the corresponding \textit{product}, which refers to a movie in the IMDb data, a business unit in the Yelp data and an item in the Amazon data.
 To keep consistency in each dataset, we keep the top 4 popular genres of products and the review documents with no less than 10 tokens.\footnote{The top 4 product categories of Amazon-health, IMDb and Yelp are [sports nutrition, sexual wellness, shaving \& hair removal, vitamins \& dietary supplements], [comedy, thriller, drama, action] and [restaurants, health \& medical, home services, beauty \& spas] respectively.}
@@ -623,7 +625,7 @@ We approach this by two analysis tasks, first by measuring word feature similari
 \end{figure*}
 
 
-Existing methods mainly infer user embeddings from features of text contents~\cite{pan2019social}.
+Existing methods mainly infer user embeddings from text~\cite{pan2019social}.
 Therefore, word usage variations across the user interests will change word distributions and further impact the stability of user embeddings.
 We aim to test whether there are language variations across the user interests in our datasets and how strong they are.
 
@@ -634,9 +636,9 @@ We build a unified feature vectorizer~\cite{pedregosa2011scikit} with TF-IDF-wei
 We rank and select the top 1000 word features for each genre domain by mutual information.
 We then compute the intersection percentage between every two genre domains: let $F_0$ is the set of top features for one genre domain and $F_1$ is the set of top features for the other domain, then the overlap is $|F_0 \cap F_1|/1000$.
 
-We show the results in Figure~\ref{chap4:fig:word_user}.
+We show results in Figure~\ref{chap4:fig:word_user}.
 The overlap varies significantly across genre domains. 
-This indicates that the word usage and its contexts of users change across user interests and preferences. 
+This indicates that word usage change across user interests and preferences. 
 Since the training of user embeddings relies heavily on the language features of users, this suggests that it is important to consider the language variations in user interests for the user embeddings.
 
 
@@ -651,7 +653,7 @@ Since the training of user embeddings relies heavily on the language features of
 \label{chap4:fig:group}
 \end{figure*}
 
-User embeddings are effective to understand user behaviors in the classification setting~\cite{amir2016modelling, ding2018predicting}.
+User embeddings are effective to understand user behaviors in classification settings~\cite{amir2016modelling, ding2018predicting}.
 Research has found that combining user and document representations can benefit classification performance~\cite{yuan2019neural}.
 We explore how language variations in user interests can affect classification models.
 
@@ -659,15 +661,14 @@ We analyze by training and testing classifiers that group users by the categorie
 We first group products and users according to product genres, which can be treated as different user domains. 
 For each domain, we downsampled the documents, users and products within each group to match the numbers in the smallest group, so that classification performance differences are not due to the data sizes.
 For each grouped documents, we shuffle and split the data into training (80\%) and test (20\%) sets. We train logistic regression classifiers~\cite{pedregosa2011scikit} using TF-IDF-weighted uni-, bi- and tri-gram features. 
-We report weighted F1 scores across grouped users and show the results in Figure~\ref{chap4:fig:group}.
+We report weighted F1-scores across grouped users and show results in Figure~\ref{chap4:fig:group}.
+The evaluation metric calculate an F1-score for each class and then averages F1-scores on the number of true labels of each class.
 
 Classification performance varies across the grouped users.
 Higher performance variations between in- and out- user groups suggest higher user variations and vice versa.
 The performance variations suggest that user behaviors vary across the categories of user interests. 
 We can also observe that classification models generally perform better when tests within the same user groups while worse in the other user groups.
 This suggests a variability connection between the user interests and language usage, which derives user embeddings. 
-
-
 
 % \subsubsection{Analysis 3}
 
@@ -693,13 +694,14 @@ We present the architecture of the proposed model in Figure~\ref{chap4:fig:uemb_
 Methods~\cite{pan2019social} to train text-based user embedding mainly focus on the user-generated documents while ignoring user factors, the user interests. 
 A close work to ours only trained user embeddings by predicting if users co-occurred with sampled words~\cite{amir2017quantifying}.
 We extend this line of work by adapting user interests, products and language usage into modeling steps.
-The proposed unsupervised model trains four joint tasks based on the Skip-Gram~\cite{mikolov2013distributed}: word and word, user and word, product and word and user and product. 
+The proposed unsupervised model trains four joint tasks based on Skip-gram~\cite{mikolov2013distributed}: word and word, user and word, product and word and user and product. 
 Note that we do not use the categories of products and user interests in our training steps.
 Then we can optimize the model by minimizing the following loss function: 
 
-$\mathcal{L} = \mathcal{L}(w, w) + \mathcal{L}(u, w) + \mathcal{L}(p, w) + \mathcal{L}(p, u)$
-where $w$, $u$, $p$ are the notations of words, users and products respectively.
+$\mathcal{L} = \alpha_{w,w}\mathcal{L}(w, w) + \alpha_{u,w}\mathcal{L}(u, w) + \alpha_{p,w}\mathcal{L}(p, w) + \alpha_{p,u}\mathcal{L}(p, u)$
+where $\alpha$, $w$, $u$, $p$ are the notations of loss weight, word, user and product respectively.
 Considering the large size of the vocabulary, users and products, we approximate our optimization objectives by the negative sampling.
+We empirically treat each task equally with $\alpha$ as 1.
 Then we can treat each task as a classification problem and calculate loss values by the binary cross-entropy.
 We present the details of each optimization task as following:
 % We can represent the user, product, document, vocabulary sets as $U = \{u_1, ..., u_n, ..., u_N\}$, $P = \{p_1, ..., p_m, ..., p_M\}$, $D = \{d_1, ..., d_c, ..., d_C\}$ respectively, where the N, M and C are the set sizes. 
@@ -712,15 +714,15 @@ is a standard way to train Word2vec~\cite{mikolov2013distributed} models. The pr
 \paragraph{User and word}
 predicts if a user authored the sampled words by the contexts of user posts. The goal is to learn patterns of user language usage from user historical posts. Given a document $i$, its author $u_i$ and the user's vocabulary $V_{u_i} = \{w_{1, i}, ..., w_{j, i}, ..., w_{n, i}\}$, where n is the number of frequent words authored by the user. Our objective is to minimize the following function:
 
-$\mathcal{L}(u, w) = -\sum_{w_j \in V_{u_i} \\ w_k \in V \\ w_k \notin V_{u_i}}[log(\theta(e(u_i) \cdot e(w_j))) +  log(\theta(e(u_i) \cdot e(w_k)))]$
-where $w_j$ is a negative sample from the whole vocabulary $V$, $e(u)$ and $e(w)$ are the fixed-length user and word vectors, and $\theta$ is a sigmoid function to normalize values of the dot production. We extend the previous work~\cite{amir2017quantifying} to integrate both local and global user language usage by sampling $w_j$ from a combined token list of both the input document and the user's vocabulary.
+$\mathcal{L}(u, w) = -\sum_{w_j \in V_{u_i} \\ w_k \in V \\ w_k \notin V_{u_i}}[log(\sigma(e(u_i) \cdot e(w_j))) +  log(\sigma(e(u_i) \cdot e(w_k)))]$
+where $w_j$ is a negative sample from the whole vocabulary $V$, $e(u)$ and $e(w)$ are the fixed-length user and word vectors, and $\sigma$ is a sigmoid function to normalize values of the dot production. We extend the previous work~\cite{amir2017quantifying} to integrate both local and global user language usage by sampling $w_j$ from a combined token list of both the input document and the user's vocabulary.
 This can help the model learn contextual information of the user.
 
 
 \paragraph{Product and word}
 follows the prediction task of user and word to classify if sampled words describe the selected product. This task is to use the contents generated by users to train the representations of products. Then we can have 
 
-$\mathcal{L}(p, w) = -\sum_{w_j \in V_{p_i}, w_k \in V, w_k \notin V_{p_i}}log(1 - \theta(e(p_i) \cdot e(w_j))) + log(\theta(e(p_i) \cdot e(w_k)))$
+$\mathcal{L}(p, w) = -\sum_{w_j \in V_{p_i}, w_k \in V, w_k \notin V_{p_i}}log(1 - \sigma(e(p_i) \cdot e(w_j))) + log(\sigma(e(p_i) \cdot e(w_k)))$
 where $V_{p_i}$ is the vocabulary of the product $p_i$ and $w_k$ is a negative sample of words.
 The language can be viewed as a bridge between the interactive relation of user and product, which predicts language usage for both products and users.
 
@@ -730,7 +732,7 @@ learns if a user commented on the sampled products. The prediction task aims to 
 Given a document $i$, its author $u_i$ and the reviewed product $p_i$,
 we can optimize the task by minimizing
 
-$\mathcal{L}(u, p) = -\sum_{p_k \in P, p_k \notin P_{u_i}}log(\theta(e(p_i) \cdot e(u_i))) + log(\theta(e(p_k) \cdot e(u_i)))$
+$\mathcal{L}(u, p) = -\sum_{p_k \in P, p_k \notin P_{u_i}}log(\sigma(e(p_i) \cdot e(u_i))) + log(\sigma(e(p_k) \cdot e(u_i)))$
 where the $P$ is the collection of all products, the $P_{u_i}$ is the reviewed products of the user and the $p_k$ is a negative sample that the user does not purchase the product.
 The constraints between products and users can help user embeddings discriminate language variations across the product domains.
 The relation of user and product can also personalize product vectors.
@@ -741,7 +743,7 @@ For model settings, we used Adam~\cite{kingma2014adam} for the model optimizatio
 \subsection{Experiments}
 \label{chap4:subsec:exp2}
 
-We evaluate the effectiveness of the user factor adapted embedding model by an intrinsic evaluation, user clustering task and an extrinsic evaluation, personalized classification task. The first task aims to measure the purity of clusters with respect to categories of user interests, and the second task uses the document classification as a proxy of qualifying quality of user embeddings. We conduct a qualitative analysis of the user embeddings comparing with the close work~\cite{amir2017quantifying}.
+We evaluate the effectiveness of user factor adapted embeddings by an intrinsic evaluation, user clustering task and an extrinsic evaluation, personalized classification task. The first task aims to measure the purity of clusters with respect to categories of user interests, and the second task uses the document classification as a proxy of qualifying quality of user embeddings. We conduct a qualitative analysis of the user embeddings comparing with the close work~\cite{amir2017quantifying}.
 
 
 \subsubsection{User Clustering Evaluation}
@@ -762,11 +764,11 @@ generates user representations by applying Latent Dirichlet Allocation (LDA)~\ci
 
 
 \paragraph{doc2user} 
-applies paragraph2vec~\cite{le2014distributed} to obtain user vectors. We implemented the User-D-DBOW model which achieved the best performance in the previous work~\cite{ding2017multi}. The implementation keeps parameters with default values in the Gensim~\cite{rehurek2010software}. We aggregate each user's documents as a single document. Then the User-D-DBOW model can derive a single user vector from the aggregated document.
+applies paragraph2vec~\cite{le2014distributed} to obtain user vectors. We implemented the User-D-DBOW model which achieved the best performance in the previous work~\cite{ding2017multi}. The implementation keeps parameters with default values in Gensim~\cite{rehurek2010software}. We aggregate each user's documents as a single document. Then the User-D-DBOW model can derive a single user vector from the aggregated document.
 
 \paragraph{bert2user} 
 follows a similar process of the lda2user. We use the ``bert-base-uncased'' pre-trained BERT model
-for English from the transformers toolkit~\cite{Wolf2019HuggingFacesTS} with default parameter and model settings. After inserting ``[CLS]'' and ``[SEP]'' to the beginning and end of each document, the BERT model encodes a document into a fixed-length (768) document vector. We can then generate user embeddings by averaging each user's all document vectors.
+for English from the transformers toolkit~\cite{Wolf2019HuggingFacesTS} with default parameter and model settings. After inserting ``[CLS]'' and ``[SEP]'' to the beginning and end of each document, the BERT model encodes a document into a fixed-length (768) document vector. We can then generate user embeddings by averaging all of each user's document vectors.
 
 
 \paragraph{user2vec} trains user embeddings by predicting word usage by users.
@@ -850,15 +852,15 @@ BERT & .866 & .822 & .840 & .852 & .809 & .826 & .866 & .825 & .840 \\
 BERT-u & .863 & .812 & .831 & .858 & .818 & .833 & .872 & .843 & \textbf{.854} \\
 BERT-up & .873 & .838 & \textbf{.851} & .864 & .831 & \textbf{.844} & .880 & .839 & \textbf{.854}
 \end{tabular}
-\caption{Performance scores of document classifiers on the review datasets. `-u` means personalized classifiers using user2vec~\cite{amir2017quantifying} and `-up` indicates personalizing classifiers via our proposed method. We use the bold fonts to highlight the best performance of each classifier on separate datasets.}
+\caption{Performance scores of document classifiers on the review datasets. ``-u'' means personalized classifiers using user2vec~\cite{amir2017quantifying} and ``-up'' indicates personalizing classifiers via our proposed method. We use the bold fonts to highlight the best performance of each classifier on separate datasets.}
 \label{chap4:tab:personalization}
 \end{table*}
 
 
-We show the performance results in Table~\ref{chap4:tab:personalization}. Comparing to the baselines, the classifiers personalized by our proposed model generally achieve the best performance across the three datasets. 
+We show performance results in Table~\ref{chap4:tab:personalization}. Comparing to the baselines, the classifiers personalized by our proposed model generally achieve the best performance across the three datasets. 
 This highlights adapting the user factor can help embedding models learn user variations and benefit classification performance on our datasets.
 We can also observe that the personalized classifiers generally outperform the non-personalized classifiers.
-This indicates personalizing the classifiers with user history boosts classification performance in our study.
+This indicates personalizing classifiers with user history boosts classification performance in our study.
 
 
 
@@ -875,7 +877,7 @@ This indicates personalizing the classifiers with user history boosts classifica
 To further evaluate the effectiveness of user embedding models, we map users into a 2-D space using user embeddings and plot them in Figure~\ref{chap4:fig:uemb_viz}.
 We group users according to user interests using the domain categories of products.
 To map the 300-d user embeddings, we use the \texttt{TSNE} algorithm from scikit-learn~\cite{pedregosa2011scikit} to compress the dimension into 2-d vectors. We set the n\_component as 2 and leave the other parameters as their defaults in the TSNE.
-We can observe that the MTL user embedding model shows more clustering patterns with regard to user interests (product categories).
+We observe that the MTL user embedding model shows more clustering patterns with regard to user interests (product categories).
 This indicates that the unsupervised multitask learning framework can adapt the latent user factors into the user embedding.
 Users may have multiple interests. In the right plot, we can also find that there is a cluster that mixes with multiple colors on the right bottom.
 
@@ -883,8 +885,8 @@ Users may have multiple interests. In the right plot, we can also find that ther
 \section{Conclusion}
 
 In this chapter, we have explored user factor adaptation from two perspectives, demographic attributes and user interests.
-We presented two major approaches for the user factor adaptation under the multitask learning framework, neural user demographic adaptation and multitask user embedding.
-The experiments showed that various domain adaptation methods can be used to build classifiers that are more robust to demographics, combined in a neural model that outperformed prior approaches.
+We presented two major approaches for user factor adaptation under multitask learning framework, neural user demographic adaptation and multitask user embedding.
+Our experiments showed that various domain adaptation methods can be used to build classifiers that are more robust to demographics, combined in a neural model that outperformed prior approaches.
 Our quantitative and qualitative analysis shows how user factors can cause user semantic variations in relation to word usage, topic shift and document classification, showing user factors are encoded in language.
 The results suggest that the domain adaptation methods can boost classifiers and user embeddings that are more robust to language variations across user factors.
 We publish our datasets\footnote{\url{http://cmci.colorado.edu/~mpaul/files/starsem2019_demographics.data.zip}} and source code.\footnote{Demographic factor adaptation: \url{https://github.com/xiaoleihuang/NUFA}. Multitask user embedding: \url{https://github.com/xiaoleihuang/UserEmbedding}.}
@@ -892,6 +894,6 @@ We publish our datasets\footnote{\url{http://cmci.colorado.edu/~mpaul/files/star
 Our work in user factor adaptation highlights several future interesting directions to explore.
 First, while our work is not focused specifically on reducing demographic biases,
 our datasets, which contain various demographic attributes, could be useful in other research. 
-This motivates us examine the demographic biases of document classifiers in the following Chapter~\ref{chp:fairness}. 
+This motivates us examine demographic biases of document classifiers in the following Chapter~\ref{chp:fairness}. 
 Second, user embedding models latent user factors inferred from user posts. A combination of user embedding and demographic attributes will help user embeddings better identify user semantic variations. 
 Third, we have demonstrated language shift over time in Chapter~\ref{chp:temporality} and our proposed user embedding does not explicitly consider the temporal factor. An interesting future direction is to further explore the dynamic user embedding, which jointly models temporality and user behaviors.

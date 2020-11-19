@@ -8,9 +8,9 @@ natural language processing (NLP) models over time.
 For example, document classifiers are typically trained on historical data and tested on future data, where the performance tends to be worse.
 Recent research has shown that document classifiers can become more stable over time when trained in ways that specifically account for temporal variations~\cite{he2018time}.
 We refer to this task of accounting for such variations during training as {\em temporality adaptation}.
-This chapter is based on materials from~\cite{huang2018examining, huang2019neural}.\footnote{The datasets along with the codes are available on: \\\url{https://github.com/xiaoleihuang/Neural_Temporality_Adaptation}, \\\url{https://github.com/xiaoleihuang/Domain_Adaptation_ACL2018}.}
+This chapter is based on materials from~\cite{huang2018examining, huang2019neural}.\footnote{The datasets along with the code are available on: \\\url{https://github.com/xiaoleihuang/Neural_Temporality_Adaptation}, \\\url{https://github.com/xiaoleihuang/Domain_Adaptation_ACL2018}.}
 
-This chapter organizes into three main parts.
+This chapter has three main parts.
 It starts with introducing six English and Chinese datasets from both social media and newspaper sources, spanning varying lengths in time (from several decades to only a few years) in Section~\ref{chap3:sec:data}. 
 Each dataset is split into a small set of time intervals, and we define each time interval as a domain. 
 The section analyzes language shifts from three aspects: word, topic and context. 
@@ -19,7 +19,7 @@ The Section~\ref{chap3:sec:fa} and \ref{chap3:sec:dwe} propose two temporality a
 
 The first method uses \textit{feature augmentation} to integrate the temporal factor into document classifiers.
 The approach considers both long-term variations in text over the years and seasonal variations that change throughout a year but repeat across years.
-The proposed method extends the existing domain adaptation method~\cite{daume2007frustratingly} and augments document representations by adding time domain-dependent features.
+The proposed method extends the existing domain adaptation method~\cite{daume2007frustratingly} and augments document representations by using both time domain-dependent and domain-independent features to train classifiers.
 While the training process uses both domain-dependent and -independent features, the testing phase only uses domain-independent feature sets.
 The goal is to learn and train domain-independent document features and classifiers.
 The experiments show that out-of-the-box domain adaptation techniques can make $n$-gram classifiers more robust to temporal shifts.
@@ -34,10 +34,10 @@ Experiments on several time-varying classification datasets demonstrate that dia
 Detailed contributions of this chapter as follows:
 
 \begin{enumerate}
-    \item We conducted a detailed analysis to understand why and how language shifts as they relate to important features for document classification. We examine the language shifts from the word, context, topic and semantic aspects.
+    \item We conducted a detailed analysis to understand the relation between language shifts and important features for document classification. We examine language shifts from the word, context, topic and semantic aspects.
     \item We applied a simple domain adaptation method via feature augmentation on both yearly and monthly varying corpora.
     \item We proposed a subword-level method for constructing diachronic words embeddings, which we show to be competitive with prior approaches. 
-    \item Our results show that neural classifiers that use the diachronic word embeddings can perform better on future data. 
+    \item Our results show that neural classifiers that use diachronic word embeddings can perform better on future data. 
 \end{enumerate}
 
 
@@ -45,13 +45,13 @@ Detailed contributions of this chapter as follows:
 \label{chap3:sec:survey}
 
 Language evolves with the increasing available online data over time. 
-With recent progress in deep neural representation learning, emerging work have been probing into the language shifting issue from the view of diachronic or dynamic word embedding perspective~\cite{tang2018state, kutuzov2018diachronic}.
-These studies have shown that shifts in the corpora across time cause changes in word contexts and consequently, changes in the learned representations. 
+With recent progress in deep neural representation learning, emerging work has been probing into the language shifting issue from the view of diachronic or dynamic word embedding perspective~\cite{tang2018state, kutuzov2018diachronic}.
+These studies have shown that shifts in the language across time cause changes in word contexts and consequently, changes in the learned representations. 
 
 Existing research~\cite{kim2014temporal, hamilton2016diachronic, yao2018dynamic, kutuzov2018diachronic} learns diachronic word embeddings from the word level, which creates a word representation in each period separately for the same word.
 To encode the temporal factor into embedding models, existing methods develop three main directions, incremental training~\cite{kim2014temporal}, linear alignment~\cite{kulkarni2015statistically, hamilton2016diachronic} and vector representation~\cite{rosenfeld2018deep, huang2019neural}.
 We illustrate the process of building a regular DWE in Section~\ref{chap2:sec:dwe}.
-However, such a method has three issues: first, building a separate embedding model for each time interval consumes a high complexity of time, memory and space; second, the colloquium and misspelling words in social media data degrade the effectiveness of word-level embeddings; third, the fixed size of the model vocabulary across periods may not be robust enough for future incoming new words.
+However, such a method has three issues: first, building a separate embedding model for each time interval has a high time-complexity cost, memory and space; second, the colloquium and misspelling words in social media data degrade the effectiveness of word-level embeddings; third, the fixed size of the model vocabulary across periods may not be robust enough for future incoming new words.
 In this chapter, we treat the time as a subword component and vectorize the component into a fixed length of numerical representation.
 
 
@@ -60,16 +60,17 @@ classifiers are often built to be applied to future data that doesn't yet exist,
 and performance on held-out data is measured to estimate performance on future data whose distribution may have changed.
 Methods exist to adjust for changes in the data distribution ({\em covariate shift}) \cite{shimodaira2000improving, bickel2009discriminative},
 but time is not typically incorporated into such methods explicitly.
-One line of work that explicitly studies the relationship between time and the distribution of data is work on classifying the time in which a document was written ({\em document dating}) \cite{kanhabua2008improving, chambers2012labeling, kotsakos2014burstines}.
+One line of work that explicitly studies the relationship between time and the distribution of data is work on classifying time in which a document was written ({\em document dating}) \cite{kanhabua2008improving, chambers2012labeling, kotsakos2014burstines}.
 However, this task is directed differently from our work: predicting timestamps given documents, rather than predicting information about documents given timestamps.
-Recent work~\cite{desai2019adaptive} used the student and teacher framework to constrained feature variations across domains for classifying whether documents are political, however, the main experimental settings in the work are different from ours, which the training set does not have periods and do not explicitly augment document representations on the time. The work mainly focused on different source domains (New York Times vs. others) instead of the temporal domain which is our main focus in this thesis.
+Recent work~\cite{desai2019adaptive} used the student and teacher framework to constrained feature variations across domains for classifying whether documents are political, however, the main experimental settings in the work are different from ours, which the training set does not have periods and do not explicitly augment document representations on the time. 
+The work mainly focused on different source domains (New York Times vs. others) instead of the temporal domain which is our main focus in this thesis.
 While research has applied diachronic word embeddings to semantic change detection and validation~\cite{mihalcea2012word, kim2014temporal, kulkarni2015statistically, hamilton2016diachronic, dubossarsky2017outta, yao2018dynamic, rudolph2018dynamic, rosenfeld2018deep, hu2019diachronic}, semantic relation analysis~\cite{liao2016analysing, szymanski2017temporal, rosin2017learning} and recent work in the named entity recognition~\cite{rijhwani2020temporally}, these types of embeddings have not been studied particularly for the document classification task, which is our focus in this chapter.
 
 
 \section{Time-Varying Corpora}
 \label{chap3:sec:data}
 
-The way people use words to express opinions has been constantly changing over time~\cite{mihalcea2012word, kulkarni2015statistically, hamilton2016diachronic}. In this section, we introduce our corpora in English and Chinese including both news articles and social media data. We conduct exploratory analyses on how language shifts over time with respect to the task of classification. The exploration of the language shifts investigates several perspectives: word usage variation, context shift and topic change. We then examine how language variations impact the document classification task.
+The way people use words to express opinions has been constantly changing over time~\cite{mihalcea2012word, kulkarni2015statistically, hamilton2016diachronic}. In this section, we introduce our corpora in English and Chinese including both news articles and social media data. We conduct exploratory analyses on how language shifts over time with respect to the task of classification. The exploration of language shifts investigates several perspectives: word usage variation, context shift and topic change. We then examine how language variations impact the document classification task.
 
 \subsection{Data}
 We retrieved available data sources from previous publications~\cite{zhang2014explicit, he2016ups, huang2018examining}. Specifically, we use four different sources in English---Amazon (music reviews), Yelp (restaurant and hotel reviews), Twitter (vaccine tweets), economic newspaper articles~\cite{figure_eight_2015} and political sentences\footnote{The American party platforms of Republicans and Democrats from 1948 to 2016, available every four years. Retrieved from \url{https://www.comparativeagendas.net/datasets_codebooks}.} and one source in Chinese, Dianping~\cite{meituan-dianping_2019}.
@@ -132,11 +133,11 @@ Yelp-rest & 2005-08, 2009-11, 2012-14, 2015-17 & Jan-Mar, Apr-Jun, Jul-Sep, Oct-
 Document classification models often use feature representations that are derived from words. Therefore, variations in word usage across time will change the distribution of features over time, which can impact the stability of document classifiers~\cite{huang2018examining}. 
 Our goal in this section is to test whether there are temporal variations in our datasets, how strong the effects are, and what patterns exist of word usage shifts. This will help us understand how word usage variations can affect document classifiers.
 
-We consider the word usage as it relates to document classification by measuring the overlap of top word features across time intervals. We rank and select the top 1,000 features for each interval by mutual information. We then calculate the intersection percentage between every two domains; 
+We consider word usage as it relates to document classification by measuring the overlap of top word features across time intervals. We rank and select the top 1,000 features for each interval by mutual information. We then calculate the intersection percentage between every two domains; 
 specifically, if $S_0$ is the set of top features for one temporal domain and $S_1$ is the set of top features for another attribute, the percent overlap is calculated as $|S_0 \cap S_1|/1000$.
 
 We present the overlaps of word usages across time in Figure~\ref{chap3:fig:lang}.
-The overlap of word usage between temporal domains varies greatly across different corpora (ranging from 0.322 to 0.911). We observe that closer temporal domains usually have higher overlap while further temporal domains share less overlap. These results thus suggest that the word usage varies over time across many settings.
+The overlap of word usage between temporal domains varies greatly across different corpora (ranging from 0.322 to 0.911). We observe that closer temporal domains usually have higher overlap while further temporal domains share less overlap. These results thus suggest that word usage varies over time across many settings.
 
 
 \subsection{Analysis 2: Context Shift}
@@ -155,15 +156,16 @@ The overlap of word usage between temporal domains varies greatly across differe
 \label{chap3:fig:ctt}
 \end{figure}
 
-Popular word representations for classification train word embeddings using the \textit{context} of each word (a window around the word, e.g., in skip-gram or continuous bag of words methods)~\cite{mikolov2013distributed, bojanowski2017enriching}.
+Popular word representations for classification train word embeddings using the \textit{context} of each word (a window around the word, e.g., in Skip-gram or CBoW methods)~\cite{mikolov2013distributed, bojanowski2017enriching}.
+Contextualized word embedding models such as BERT~\cite{devlin2019bert} use bidirectional contexts to predict masked tokens.
 Therefore, we seek to understand how semantic contexts of words shift across time, in addition to the words themselves. 
 If we observe a significant context shift, this could lead to inconsistent semantic representations across time.
 
 In the case of context shift, we extract the same unigram features as in the previous section and define word contexts by simulating the word embedding training process via contextual windows. We set a window size of five words and record the words that occur within the context windows. Following the previous section but using the set of words that appear in the context windows, we then calculate the intersection overlap between each pair of time domains.  
 
-We show the overlap in the Figure~\ref{chap3:fig:ctt}.
+We show the overlap in Figure~\ref{chap3:fig:ctt}.
 The overlap percentages range from 0.070 to 0.378. We also observe that temporally closer domains share higher percentages of contextual words. The pattern aligns with our observations in the Section~\ref{chap3:subsec:wusage}. 
-Since word embeddings rely heavily on contextual information~\cite{mikolov2013distributed}, our observations that contexts have little overlap across different time intervals, therefore, suggest it will be important to account for temporality in word embeddings.
+Since word embeddings rely heavily on contextual information~\cite{mikolov2013distributed, devlin2019bert}, our observations that contexts have little overlap across different time intervals, therefore, suggest it will be important to account for temporality in word embeddings.
 
 
 \subsection{Analysis 3: Topic Shift}
@@ -208,15 +210,15 @@ We observe very little variation in the topic distribution across seasons while 
 
 The Section \ref{chap3:subsec:wusage}, \ref{chap3:subsec:ctt_shift} and \ref{chap3:subsec:topic} show document features from word, context and topic have shifted overtime. In this section, we investigate how the shifts impact the performance of document classifiers.
 
-We first conduct an analysis of how classifier performance depends on the time intervals in which it is trained and applied.
+We first conduct an analysis of how classifier performance depends on the time interval in which it is trained and applied.
 For each corpus, we train the classifier on each time interval and test on each time interval.
-To keep the same labeling format, the reviews with neutral scores were removed.
+To keep the same labeling format, reviews with neutral scores were removed.
 We downsampled the training data within each time interval to match the number of documents in the smallest interval, so that differences in performance are not due to the size of the training data.
 
 In all experiments, we train a classifier on a partition of 80\% of the documents in the time interval, and repeat this five times on different partitions, averaging the five F1 scores to produce the final estimate. When training and testing on the same interval, we test on the held-out 20\% of documents in that interval (standard cross-validation).
 When testing on different time intervals, we test on all documents, since they are all held-out from the training interval; however, we still train on five subsets of 80\% of documents, so that the training data is identical across all experiments.
 
-The Figure~\ref{chap3:fig:time} can demonstrate that the temporal variations directly impact the performance of document classifiers: 
+Figure~\ref{chap3:fig:time} can demonstrate that the temporal variations directly impact the performance of document classifiers: 
 \begin{itemize}
     \item Classifiers perform best when applied to the same time interval they were trained, and performance diminishes when applied to other time intervals;
     \item Classifiers generally perform worse on farther time intervals than closer time intervals.
@@ -237,7 +239,7 @@ We now consider how to improve classifiers when working with datasets that span 
 We propose to treat this as a {\em domain adaptation} problem.
 In domain adaptation, any partition of data that is expected to have a different distribution of features can be treated as a domain \cite{joshi2013s}.
 Traditionally, domain adaptation is used to adapt models to a common task across rather different sets of data, e.g., a sentiment classifier for different types of products \cite{blitzer2007biographies}.
-Recent work has also applied domain adaptation to adjust for potentially more subtle differences in data, such as adapting for differences in the demographics of authors \cite{volkova2013exploring, lynn2017human}.
+Recent work has also applied domain adaptation to adjust for potentially more subtle differences in data, such as adapting for differences in demographics of authors \cite{volkova2013exploring, lynn2017human}.
 We follow the same approach, treating time intervals as domains.
 
 In our experiments, we use the feature augmentation approach of \cite{daume2007frustratingly} to perform domain adaptation. Each feature is duplicated to have a specific version of the feature for every domain, as well as a domain-independent version of the feature. In each instance, the domain-independent feature and the domain-specific feature for that instance's domain have the same feature value, while the value is zeroed out for the domain-specific features for the other domains. This is equivalent to a model where the feature weights are domain-specific but share a Gaussian prior across domains \cite{finkel2009hierarchical}.
@@ -264,7 +266,7 @@ Economy (news) & .782 & .782  \\
 Twitter (vaccines) & \bf .881 & .880  \\
 \hline
 \end{tabular}
-\caption{\label{chap3:tab:results_seasonal} F1 scores when treating each seasonal time interval as a domain and applying domain adaptation compared to using no adaptation.}
+\caption{\label{chap3:tab:results_seasonal} F1-weighted scores when treating each seasonal time interval as a domain and applying domain adaptation compared to using no adaptation.}
 \end{table}
 
 We first examine classification performance on the datasets when grouping the seasonal time intervals (January-March, April-June, July-August, September-December) as domains and applying the feature augmentation approach for domain adaptation. 
@@ -380,10 +382,10 @@ In all cases, we keep the dimension of word representations as 200.
 We retrieved a newspaper dataset of the New York Times~\cite{yao2018dynamic}.
 The dataset contains $99,872$ newspaper articles in 27 years ranging from 1990 to 2016.
 We used \textit{RegexpTokenizer} from NLTK~\cite{bird2004nltk} to tokenize the documents that only contain alphabets and numbers.
-We then dropped any paragraphs that are less than 5 tokens and filtered out any words if their frequency is smaller than 5 in the general domain.
+We then dropped any paragraphs that were less than 5 tokens and filtered out any word was smaller than 5 in the general domain.
 With the time information, we grouped documents in every three years: 1990-1992 (90-92); 1993-1995 (93-95); 1996-1998 (96-98); 1999-2001 (99-01); 2002-2004 (02-04); 2005-2007 (05-07); 2008-2010 (08-10); 2011-2013 (11-13); 2014-16 (14-16). 
-We show the details of preprocessed evaluation data in Table~\ref{chap3:tab:dweEvalData}.
-We can observe that the frequency of unique word numbers varies across time domains. 
+We show details of preprocessed evaluation data in Table~\ref{chap3:tab:dweEvalData}.
+We observe that the frequency of unique words numbers varies across time domains. 
 Such variations can impact the vocabulary size and contexts of words, which are important to train word embeddings.
 
 \begin{table}[htp]
@@ -409,10 +411,10 @@ Such variations can impact the vocabulary size and contexts of words, which are 
 
 \paragraph{Static.} 
 We train the word2vec model~\cite{mikolov2013distributed} on the entire corpus without considering time information.
-The training parameters keep their default values in the Gensim~\cite{rehurek2010software}.
+The training parameters keep their default values in Gensim~\cite{rehurek2010software}.
 
 \paragraph{Linear.} 
-Kulkarni et al.~\cite{kulkarni2015statistically} proposed a linear alignment method. The approach first extracts k nearest neighbors of words in both source and target domains and then uses a linear regression model to minimize the distance between those word representations. We use the \textit{NearestNeighbors} from scikit-learn~\cite{pedregosa2011scikit} and \textit{WLS} function from StatsModels to implement the baseline.
+Kulkarni et al.~\cite{kulkarni2015statistically} proposed a linear alignment method. The approach first extracts k nearest neighbors of words in both source and target domains and then uses a linear regression projection to minimize the distance between those word representations. We use the \textit{NearestNeighbors} from scikit-learn~\cite{pedregosa2011scikit} and \textit{WLS} function from StatsModels to implement the baseline.
 
 \paragraph{Procrustes.} 
 Hamilton et al.~\cite{hamilton2016diachronic} used orthogonal Procrustes to align yearly embedding models. We implement the model via \textit{procurstes} function in SciPy~\cite{scipy_2001}. We align embedding models of other temporal intervals towards the embedding model in the latest time interval.
@@ -423,7 +425,7 @@ Zhang et al.~\cite{zhang2017temporal} developed a weighted linear transformation
 \paragraph{DW2V.} 
 Yao et al.~\cite{yao2018dynamic} designed a joint optimization problem that minimizes distances between the embeddings and positive point-wise mutual information (PPMI) and distances between every pair of temporal domain's static embeddings. We follow the same parameter settings in their source codes.\footnote{\url{https://github.com/yifan0sun/DynamicWord2Vec}}
 
-\subsubsection{Evaluation Results}
+\subsubsection{Empirical Results}
 
 We present the evaluation method, metrics and results in this section.
 The evaluation set is from the \textit{DW2V}~\cite{yao2018dynamic}, which measures if the embedding models can categorize words their correct meanings across yearly domains. 
@@ -436,6 +438,7 @@ For example, if the year is 2013, we will convert it to 2011-13.
 $$F_\beta = \frac{(\beta^2 + 1) * Precision * Recall}{\beta^2*Precision + Recall}$$
 
 We use the F$_\beta$ to measure the effectiveness of the embedding models on the test set.
+Following~\cite{yao2018dynamic}, we set $\beta$ as 1.
 By using \textit{SpectralClustering} in scikit-learn~\cite{pedregosa2011scikit}, we first apply the clustering algorithm to group the test words with three different cluster sizes, 10, 15 and 20. 
 We set the affinity as cosine and leave other parameters as defaults.
 To measure the cluster quality, we then select every two words from the test sets without repetition.
@@ -475,7 +478,7 @@ Our method consistently outperforms the other methods and gain about 3.37 absolu
 Using our proposed approach to constructing diachronic word embeddings,
 we now consider how these embeddings can be used to further analyze language shift.
 
-The Law of Conformity states a negative correlation between word frequency and meaning change~\cite{hamilton2016diachronic}; however, \cite{dubossarsky2017outta} shows that the word frequency does play an important role in the semantic change, even though a small one. 
+The Law of Conformity states a negative correlation between word frequency and meaning change~\cite{hamilton2016diachronic}; however, \cite{dubossarsky2017outta} shows that word frequency does play an important role in the semantic change, even though a small one. 
 Diachronic embeddings have been used to measure the semantic shift using linear interpolation (regression)~\cite{hamilton2016diachronic}. 
 Here, we re-examine this issue from another view, the distance of semantic distributions, which views the word embeddings as semantic distributions and measures how the word embeddings vary across time.
 
@@ -508,7 +511,7 @@ Usage-Context  & .926* & -.009   & .600*  & .979*   & .950*    & .955*
 \end{table*}
 
 We have presented language shifts across time domains based on word usage overlap (Section~\ref{chap3:subsec:wusage}), context overlap (Section~\ref{chap3:subsec:ctt_shift}), topic change (Section~\ref{chap3:subsec:topic}) and distribution distance (this section). However, it is not clear if these different metrics are measuring the same information. To understand this further, we calculate the Pearson correlation coefficient to measure the relationships between each pair of metrics. 
-We show the correlations in Table~\ref{chap3:tab:corr}. We observe negative correlations between the two overlap measures (higher means more shift) and distribution distance (lower means less shift),
+We show correlations in Table~\ref{chap3:tab:corr}. We observe negative correlations between the two overlap measures (higher means more shift) and distribution distance (lower means less shift),
 and a positive correlation between word usage and context overlaps.
 These results show that the three metrics are related, though there are some datasets where the correlations are low.
 
@@ -524,11 +527,7 @@ NTAM is initialized with $T$ diachronic word embeddings ($Emb^{Tt}, t\in T$) plu
 \label{chap3:fig:model}
 \end{figure*}
 
-We construct a document classification model that assumes
-the language used to describe document categories will evolve;
-for example
-newer documents may use emoji to express opinions,
-while older documents would not contain these features.
+We construct a document classification model that assumes the language used to describe document categories will evolve; for example newer documents may use emoji to express opinions, while older documents would not contain these features.
 Our goal is to build document classifiers with time-invariant features and are thus robust to language shift. 
 
 Our previous work~\cite{huang2018examining} on temporality adaptation for $n$-gram classifiers used a domain adaptation approach~\cite{daume2007frustratingly} where 
@@ -550,7 +549,7 @@ We initialize the model with the domain-specific embeddings and the general word
 The $T+1$ embeddings provide diverse views of input words, which are fed to the rest of the neural architecture, leaving the model to optimize representations automatically.
 
 \paragraph{Time-driven learning process.}
-To learn temporal variations for document representations, we propose a series of $T+1$ continuously temporal Bidirectional Long Short Term Memory (Bi-LSTM) models~\cite{hochreiter1997long}. The first $T$ Bi-LSTMs correspond to the $T$ time domains and the last Bi-LSTM corresponds to the general view of input documents and outputs the final document representation. Similar to how the diachronic word embeddings encode input words into multiple views of time domains, we use $T+1$ Bi-LSTMs to learn diachronic views of document representations. 
+To learn temporal variations for document representations, we propose a series of $T+1$ continuously temporal Bidirectional Long Short Term Memory (Bi-LSTM) models~\cite{hochreiter1997long}. The first $T$ Bi-LSTMs correspond to the $T$ time domains and the last Bi-LSTM corresponds to the general view of input documents and outputs final document representations. Similar to how the diachronic word embeddings encode input words into multiple views of time domains, we use $T+1$ Bi-LSTMs to learn diachronic views of document representations. 
 
 To capture the semantic shifts across time domains, our intuition is to model the dynamic process. The memory mechanism of LSTM fits our needs, which optimizes the balance across different time patterns via non-linear computations. While each Bi-LSTM reads through tokens in its input document, we feed the previous Bi-LSTM's hidden state and memory cell to excite the learning process of the subsequent Bi-LSTM. The final Bi-LSTM learns jointly the previous shift patterns of document representations with the general embedding view of documents and outputs its final document representation $h_g$. 
 
@@ -599,7 +598,7 @@ To ensure fair comparisons, we use the same settings across all models. We compa
 We extract 1- and 2-gram features on the corpora with the most frequent 15K features. We then build a logistic regression classifier using \texttt{LogisticRegression} from scikit-learn~\cite{pedregosa2011scikit} with default parameters.
 
 \paragraph{CNN.} 
-We implement the Convolutional Neural Network (CNN) classifier described in~\cite{kim2014convolutional}. To keep consistent, we initialize the model with pre-trained word embeddings~\cite{bojanowski2017enriching} that were trained on the same datasets as the diachronic embeddings. We only keep the 15K most frequent words and replace the rest with an ``unk'' token. 
+We implement the Convolutional Neural Network (CNN) classifier described in~\cite{kim2014convolutional}. To stay consistent, we initialize the model with pre-trained word embeddings~\cite{bojanowski2017enriching} that were trained on the same datasets as diachronic embeddings. We only keep the 15K most frequent words and replace the rest with an ``unk'' token. 
 We set the model optimizer as Adam~\cite{kingma2014adam}. 
 
 \paragraph{Bi-LSTM.} 
@@ -670,7 +669,7 @@ Median & 0.30 & 0.15 & -0.60 & 0.45 & 0.25 & -0.50 & 0.45 & 2.80\\
 
 
 The results of our experiments are shown in Table~\ref{chap3:tab:results}. 
-Our proposed approach leads to performance improvements over the comparable baselines on most datasets.
+Our proposed approach leads to performance improvements over the baselines on majority of the datasets.
 NTAM has the highest performance on 4 out of 6 datasets, while FEDA has the highest performance on the other 2 (while NTAM is the next best for those 2).
 
 
@@ -682,7 +681,7 @@ with the RCNN generally outperforming the other baselines.
 This indicates that the temporal factor can potentially improve the performance of document classification, and that domain adaptation is a possible approach to temporality adaptation. 
 
 \paragraph{Significance analysis.} 
-To verify the improvements of our proposed method NTAM compared to baselines, we conduct a significance analysis to compare our proposed model with the RCNN, which is the closest model to ours. We follow \cite{berg2012empirical} and bootstrap sample 50 pairs of test datasets with replacement. We keep the same data size as the previous experiments in the Table~\ref{chap3:tab:results}. We then use the same previous parameters and re-conduct the classification experiments. We format the experimental results as two lists of scores. We conduct a paired t-test to test the null hypothesis that our proposed model does not differ significantly from the RCNN. The test presents a significant result with t(95) = 3.258 and p-value = 0.00119. The result suggests rejecting the null hypothesis at a 95\% confidence level.
+To verify the improvements of our proposed method NTAM compared to baselines, we conduct a significance analysis to compare our proposed model with the RCNN, which is the closest model to ours. We follow \cite{berg2012empirical} and bootstrap sample 50 pairs of test datasets with replacement. We keep the same data size as the previous experiments in Table~\ref{chap3:tab:results}. We then use the same previous parameters and re-conduct the classification experiments. We format the experimental results as two lists of scores. We conduct a paired t-test to test a null hypothesis that our proposed model does not differ significantly from the RCNN. The test presents a significant result with t(95) = 3.258 and p-value < 0.005. The result suggests rejecting the null hypothesis at a 95\% confidence level.
 
 
 \subsection{Effectiveness of Diachronic Embeddings}
@@ -717,5 +716,5 @@ In this chapter, we proposed two temporality adaptation methods to improve the t
 We explore and examine language temporal shifts on seven bilingual corpora from social media to news articles in Section~\ref{chap3:sec:data}. 
 As described in Section~\ref{chap3:sec:fa}, We have shown both qualitatively and quantitatively that our proposed FEDA and diachronic word embedding are capable of discovering language shift patterns and improve model productiveness across both seasonal and non-seasonal periods.
 We proposed a new framework to train diachronic word embedding via a subword mechanism in Section~\ref{chap3:sec:dwe}.
-Evaluations using a clustering task of word analogy show the preeminence of our proposed DWE model.
+Evaluations using a clustering task of word analogy show preeminence of our proposed DWE model.
 The Section~\ref{chap3:sec:model} presented a new time-driven classification model that encodes documents through the diachronic word embedding. 

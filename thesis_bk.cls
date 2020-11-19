@@ -5,10 +5,6 @@
 %%	Preparation of Master's Thesis and Doctoral Dissertations
 %% Version 1.00 written by John P. Weiss, 1997
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%      version 1.14, Ken Anderson, August 2020 -- removed signature
-%%		page; instead list committee members on title page.
-%%		Changes made to comply with new Graduate School
-%%		guidelines.
 %%	version 1.13, Hongcheng Ni, March 2014 -- made compatible with
 %%		hyperref.
 %%	version 1.12, Hongcheng Ni, March 2014 -- added title before
@@ -38,15 +34,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesClass{thesis}[2020/08/06]	% version 1.14
+\ProvidesClass{thesis}[2014/03/27]	% version 1.13
 
 \typeout{}
 \typeout{--------------------------------------------------------------}
-\typeout{ +---+ Thesis Style (thesis.cls) version 1.14}
+\typeout{ +---+ Thesis Style (thesis.cls) version 1.13}
 \typeout{ +---+ for University of Colorado Ph.D. theses/dissertations.}
 \typeout{ * Conforms to the University of Colorado at Boulder Graduate}
 \typeout{ * School "SPECIFICATIONS for Preparation of Master's Thesis}
-\typeout{ * and Doctoral Dissertations" (rev. May 2020).}
+\typeout{ * and Doctoral Dissertations" (rev. March 2014).}
 \typeout{--------------------------------------------------------------}
 \typeout{ URL: http://www.colorado.edu/oit/software-hardware/tex-latex}
 \typeout{}
@@ -934,7 +930,6 @@
 \newcommand*{\th@readerThree}{none}	% optional
 \newcommand*{\th@readerFour}{none}	% optional
 \newcommand*{\th@readerFive}{none}	% optional
-\newcommand*{\th@readerSix}{none}	% optional
 \newcommand*{\th@IRBprotocol}{none}	% optional
 \newcommand*{\th@fulldegree}{
 	\ClassError{thesis}{
@@ -1039,21 +1034,6 @@
 		\th@deptorg\ \th@deptname\\
 		\ \th@degreeyear \\
 	\end{center}
-	\begin{flushright}
-	\vfill
-	% List committee members on title page
-	Committee Members:\\
-	\th@advisor, Chair\\  % REQUIRED
-	\th@reader\\          % REQUIRED
-	\ifthenelse{\equal{\th@readerThree}{none}}{\relax}
-		{\th@readerThree\\} % optional
-	\ifthenelse{\equal{\th@readerFour}{none}}{\relax}
-		{\th@readerFour\\} % optional
-	\ifthenelse{\equal{\th@readerFive}{none}}{\relax}
-		{\th@readerFive\\} % optional
-	\ifthenelse{\equal{\th@readerSix}{none}}{\relax}
-		{\th@readerSix\\} % optional
-	\end{flushright}
 	\@thInHeadingfalse
 	\vfill
 }
@@ -1063,7 +1043,7 @@
 	\thispagestyle{empty}
 	\vspace*{\fill}
 	\begin{center}
-		This thesis entitled:\\
+		This thesis proposal entitled:\\
 		\th@title\\
 		written by\
 		\th@fwdname\\
@@ -1071,7 +1051,7 @@
 		\th@deptorg\
 		\th@deptname
 	\end{center}
-	\vspace*{1mm}
+	\vspace*{2mm}
 	\th@signature{\th@advisortitle\ \th@advisor}
 	\th@signature{\th@reader}		% REQUIRED.
 	\ifthenelse{\equal{\th@readerThree}{none}}{\relax}
@@ -1080,8 +1060,6 @@
                 {\th@signature{\th@readerFour}} % optional
 	\ifthenelse{\equal{\th@readerFive}{none}}{\relax}
                 {\th@signature{\th@readerFive}} % optional
-	\ifthenelse{\equal{\th@readerSix}{none}}{\relax}
-                {\th@signature{\th@readerSix}} % optional
 	\th@dateline
 	\vspace*{\fill}
 	\begin{center}
@@ -1104,7 +1082,7 @@
 			\setlength{\itemsep}{0pt}}
 		\item \th@revname\ (\th@degree)
 		\item \th@title
-        \item Thesis directed by Dr. \th@reader ~and \th@advisortitle\ \th@advisor
+        \item Thesis directed by \th@reader ~and \th@advisortitle\ \th@advisor
 	\end{list}
 	\par
 	\vspace*{4\parsep}
@@ -1177,9 +1155,8 @@
 		\pagenumbering{roman}
 		\typeout{Making Title Page}
 		\th@Titlepage
-		% Note: Approval Page is no longer required.
-		% \typeout{Making Approval Page}
-		% \th@Approvalpage
+		\typeout{Making Approval Page}
+		\th@Approvalpage
 		\typeout{Making Abstract Page}
 		\th@Abstractpage
 		\typeout{Making Dedication Page}
@@ -1219,7 +1196,6 @@
 \newcommand*{\readerThree}[1]{\th@StoreIn{\th@readerThree}{#1}}
 \newcommand*{\readerFour}[1]{\th@StoreIn{\th@readerFour}{#1}}
 \newcommand*{\readerFive}[1]{\th@StoreIn{\th@readerFive}{#1}}
-\newcommand*{\readerSix}[1]{\th@StoreIn{\th@readerSix}{#1}}
 \newcommand*{\IRBprotocol}[1]{\th@StoreIn{\th@IRBprotocol}{#1}}
 \newcommand*{\degreeyear}[1]{\th@StoreIn{\th@degreeyear}{#1}}
 \newcommand{\otherdegrees}[1]{\th@StoreIn{\th@otherdegrees}{#1}}

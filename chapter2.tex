@@ -2,7 +2,7 @@
 \label{chp:background}
 
 This chapter provides the necessary background within natural language processing (NLP) for this dissertation, including the document classification task, methods of domain adaptation, problem settings of metadata variations in language.
-This chapter organizes sections as follows:
+This chapter is organized as follows:
 
 Section~\ref{chap2:sec:doc_clf} presents a standard pipeline of building document classification models.
 I first present steps of document preprocessing and major classification models. 
@@ -13,10 +13,10 @@ Section~\ref{chap2:sec:domain_adpt} introduces important methods and frameworks 
 The fundamental methods serve as stepstones for new models that will be proposed in this thesis.
 
 Section~\ref{chap2:sec:time} and Section~\ref{chap2:sec:demographic} demonstrate the challenges of handling language variations across both temporal and demographic factors, which can cause performance drops and prevent model generalizations for the document classification task.
-For the temporality, I discuss existing methods that model the temporal factor into neural representations, the diachronic word embedding. 
-For the user factor, I present existing methods of user factor adaptation. 
-While the user factors can improve model performance, I introduce potential fairness issues of document classifiers caused by the user demographic factors.
-The discussions and introduction serve to facilitate introductions of our temporality and user factor adaptation methods in the following chapters.
+For temporality, I discuss existing methods that model the temporal factor into neural representations, the diachronic word embedding. 
+For user factors, I present existing methods of user factor adaptation. 
+While user factors can improve model performance, I introduce potential fairness issues of document classifiers caused by the user demographic factors.
+The discussion and introduction serve to facilitate introductions of our temporality and user factor adaptation methods in the following chapters.
 
 
 \section{Document Classification}
@@ -29,35 +29,35 @@ The task of document classification aims to assign a document one or more catego
 Preprocessing matters for training machine learning models~\cite{camacho2018role,huang2019matters}.
 Many tools can help preprocess text documents, such as NLTK~\cite{bird2004nltk}.
 The process can have two different levels: text documents and document classes.
-Common document preprocessing strategies include lowercase, tokenization, removing stopwords, lemmatization, etc.
-For languages like Chinese, we can use segmentation tools~\cite{sun2012jieba} to split a sentence into words.
-While most tasks focus on monolingual settings that train and test on the same languages, for cross-lingual settings, translation is an important strategy.
+Common document preprocessing strategies include lowercasing, tokenization, removing stopwords, lemmatization, etc.
+For language like Chinese, we can use segmentation tools~\cite{sun2012jieba} to split a sentence into words.
+While most tasks focus on monolingual settings that train and test on the same language, for cross-lingual settings, translation is an important strategy.
 Additionally, preprocessing steps are important for privacy, anonymity and fairness. 
-For example for Twitter data, to protect user privacy, we can replace user name, URL and sensitive words with dummy words. 
+For example for Twitter data, to protect user privacy, we can replace the username, URL and sensitive words with dummy words. 
 Research shows that replacing sensitive words in the preprocessing step can significantly reduce the demographic bias of classifiers~\cite{dixon2018measuring}.
 To encode the $N$ document labels, we either choose to use sparse categorical classes such as [0, 1, ..., N-1] or one hot encoding which has one 1 and the other N-1 scalars as zeros in a numerical vector. 
 
 
 \subsection{Traditional Classifiers}
 
-Traditional classifiers including logistic regression and support vector machine (SVM) require extensive labors in designing feature sets.
-In this thesis, we mainly use three types of document features: n-gram, topic model and syntax.
+Traditional classifiers including logistic regression and support vector machine (SVM) require laborious feature engineering in designing feature sets.
+In this thesis, we mainly use three types of document features: n-gram, topic and syntactic features.
 
 \begin{enumerate}
-\item \textit{N-gram} extracts token sequences and counts their occurrence. The token sequences have different combinations of lengths, such as unigram, bi-gram, or tri-gram. The count values can be normalized via term frequency–inverse document frequency (TF-IDF), which leverages the importance of features by lowering weights of high frequent features and improving weights of rare features.  
-\item \textit{Topic model}~\cite{blei2003latent} views each document has a distribution over $k$ topics and drive the topic features from each document. The topic feature size is the number of topics, $k$. 
-\item \textit{Syntax} can be phonological, morphological, or semantic features. For example, a common feature is a part-of-speech (POS) tag by counting the number of each tag category in every document. 
+\item \textit{N-gram} extracts token sequences and counts their occurrence. The token sequences have different combinations of lengths, such as uni-, bi-, or tri-gram. The count values can be normalized via term frequency–inverse document frequency (TF-IDF), which leverages the importance of features by lowering weights of high frequent features and improving weights of rare features.
+\item \textit{Topic} features~\cite{blei2003latent} view each document has a distribution over $k$ topics and drive the features from each document by topic models. The dimension of topic features is the number of topics, $k$. 
+\item \textit{Syntactic} features can be phonological, morphological, or semantic features. For example, a common feature is a part-of-speech (POS) tag by counting the number of each tag category in every document. 
 \end{enumerate}  
 
 
-We train a supervised classifier by the input feature, $x$, and its associated annotations, $y$. The feature is a D-dimensional vector of numbers to describe the properties of an object, such as length of sentence. The annotations are vectorized to a categorical or nominal variable from some finite set, $y_i \in {1, ..., C}$, where $C$ is the number of document classes. We use the features and labels to train a document classifier, $\hat{y}_i = \theta(x_i)$, by maximizing the log probability, $argmax\sum_{i=1}^nlog P(y_i | x_i; \theta)$, where the $i$ the index of data instance, the $\hat{y}_i$ is the predicted value by the classifier, the $\theta$ refers to the classification function. The training process is that we feed the vectorized training data, $x$, to the classifier $\theta$ to learn the optimum values. Through the model, we can choose the most probable category of the input data.
+We train a supervised classifier by the input features, $x$, and its associated annotations, $y$. The features are D-dimensional vector(s) to describe the properties of an object, such as length of sentence. The annotations are vectorized to a categorical or nominal variable from some finite set, $y_i \in {1, ..., C}$, where $C$ is the number of document classes. We use the features and labels to train a document classifier, $\hat{y}_i = \sigma(x_i)$, by maximizing the log probability, $\argmax_{\theta}\sum_{i=1}^nlog P(y_i | x_i; \theta)$, where $i$ is the index of data instance, $\hat{y}_i$ is the predicted value by the classifier, $\theta$ refers to model parameters of a document classifier. The training process is that we feed the vectorized training data, $x$, to the classifier $\sigma$ to learn optimum parameters $\theta$. Using the model, we can obtain the most probable category of the input data.
 
 
 \subsection{Neural Classifiers}
 
 Neural classifiers have shown their premier performance over traditional classifiers in document classification~\cite{mikolov2013distributed, kim2014convolutional}.
 This section first introduces neural representations of words, word embedding.
-Then it presents three types of neural models, convolutional neural network (CNN), recurrent neural network (RNN) and bidirectional encoder representations from transformer (BERT).
+Then we present three types of neural models, convolutional neural network (CNN), recurrent neural networks (RNNs) and bidirectional encoder representations from transformer (BERT).
 
 \subsubsection{Word Embedding}
 \label{chap2:subsubsec:emb}
@@ -69,21 +69,21 @@ Then it presents three types of neural models, convolutional neural network (CNN
 \label{chap2:fig:embd}
 \end{figure}
 
-The word embedding is to map a word into a fixed-length vector. 
+Word embedding maps a word into a fixed-length vector. 
 In this section, we will cover methods of building word embeddings from two levels, word and subword. 
-We will use them extensively in the following chapters and leave out other methods that are not used in this thesis, such as character embeddings~\cite{zhang2015character}.
+We will use them in the following chapters and leave out other methods that are not used in this thesis, such as character embeddings~\cite{zhang2015character}.
 
 \paragraph{Word level} is to encode a token into a fixed dimensional representation~\cite{mikolov2013distributed, pennington2014glove}. 
-There are two ways to train word embedding models, Skip-gram and Continuous Bag of Words (CBOW).
-We show the details of two training strategies in Figure~\ref{chap2:fig:embd}.
+In this thesis, our focus is on two typical ways to train word embedding models, Skip-gram and Continuous Bag of Words (CBOW).
+We show details of two training strategies in Figure~\ref{chap2:fig:embd}.
 
 The two methods both first randomly initialize the two word embeddings, input ($E$) and output ($\hat{E}$).
 The two embeddings share with the same dimensions $|V| * d$, where $|V|$ is the size of total vocabulary and $d$ is the vector dimension.
-For the CBOW, we first generate one hot encoding vector of the context words with the context windows size as $m$ and feed the vector to the input embedding $E$; we can then obtain vector representations of the context words, $E(w_{i-m}), ..., e(w_{i-1}), e(w_{i+1}), ..., e(w_{i+m})$; next, we sum and average the obtained vectors and can get $\bar{e}$; we dot product the $\bar{e}$ with $\hat{E}$, $\bar{e} \cdot \hat{E} $, and feed the output to a softmax function; we can obtain a predicted probability vector $\hat{y} = softmax(\bar{e} \cdot \hat{E})$ over the whole vocabulary $\hat{y} \in R^{|V|}$; and finally we can optimize the model by categorical cross-entropy $H(\hat{y}, y) = -\sum^{|V|}_{i=1}y_ilog(\hat{y}_i)$.
-The key difference between the two methods is that while the CBOW uses the context to predict a word, the Skip-gram predicts the context by a word.\footnote{A detailed comparison can be referred to \url{https://cs224d.stanford.edu/lecture_notes/notes1.pdf}}
+For CBOW, we first generate one hot encoding vector of the context words with the context windows size as $m$ and feed the vector to the input embedding $E$; we can then obtain vector representations of the context words, $E(w_{i-m}), ..., e(w_{i-1}), e(w_{i+1}), ..., e(w_{i+m})$; next, we sum and average the obtained vectors and can get $\bar{e}$; we dot product the $\bar{e}$ with $\hat{E}$, $\bar{e} \cdot \hat{E} $, and pass the output to a softmax function; we can obtain a predicted probability vector $\hat{y} = softmax(\bar{e} \cdot \hat{E})$ over the whole vocabulary $\hat{y} \in R^{|V|}$; and finally we can use cross-entropy for model optimization, $H(\hat{y}, y) = -\sum^{|V|}_{i=1}y_ilog(\hat{y}_i)$.
+The key difference between the two methods is that while CBOW uses the context to predict a word, Skip-gram predicts the context by a word.\footnote{A detailed comparison can be referred to \url{https://cs224d.stanford.edu/lecture_notes/notes1.pdf}}
 
-However, the softmax and objective functions over the whole vocabulary $V$ consume too much computation, and therefore, we use the \textit{Negative Sampling}~\cite{mikolov2013distributed} to approximate the results and reduce the computational cost.
-The negative sampling use one target word and samples $n$ words as negative samples by normalized word frequency $freq^{\frac{3}{4}}$.
+However, softmax and objective functions over the whole vocabulary $V$ consume too much computation, and therefore, we use the \textit{Negative Sampling}~\cite{mikolov2013distributed} to approximate results and reduce the computational cost.
+Negative sampling uses one target word and samples $n$ words as negative samples.
 By only sampling a small number of words $n \ll |V|$, the negative sampling reduces the computational cost significantly.
 
 % draw the process of skip-gram and cbow
@@ -91,7 +91,7 @@ By only sampling a small number of words $n \ll |V|$, the negative sampling redu
 
 \paragraph{Subword level} represents a word by a couple of subwords, which are sequences of character(s).
 The method splits a word into a series of subwords, for example, to represent $where$ by 3-gram characters, we will obtain $whe, her, ere$.
-The FastText~\cite{bojanowski2017enriching} appends two positional marks, $<$ and $>$, to the start and end of each word and uses a range of n-gram characters to represent a word. 
+FastText~\cite{bojanowski2017enriching} appends two positional marks, $<$ and $>$, to the start and end of each word and uses a range of n-gram characters to represent a word. 
 Instead of generating a vector for a word, the method initializes an embedding for all subword components.
 To represent a word, the method sums and averages representations of all its subwords.
 Then the model trains the aggregated word representations to either Skip-gram or CBOW.
@@ -103,27 +103,28 @@ The training steps are similar to the word level embedding models shown in Figur
 \begin{figure}[t!]
 \centering
 \includegraphics[width=0.90\textwidth]{images/chapter2/cnn.pdf}
-\caption{Illustration of CNN model architecture for document classifiers. The simplified architecture follows the existing research work~\cite{kim2014convolutional}. We feed the indices of words to the model. The model initializes pre-trained word embeddings and deploys three different kernel sizes: 5 (yellow), 4 (grey) and 3 (green). We only use 1 filter in each kernel size for simplicity. The model performs a 1-max pooling operation on outputs of the convolution layer. The final softmax layer receives the concatenated outputs from the pooling layer and predicts document categories.}
+\caption{Illustration of CNN model architecture for document classifiers. The simplified architecture follows the existing research work~\cite{kim2014convolutional}. The model converts indices of words to word vectors. The model initializes pre-trained word embeddings and deploys three different kernel sizes: 5 (yellow), 4 (grey) and 3 (green). We only use 1 filter in each kernel size for simplicity. The model performs a 1-max pooling operation on outputs of the convolution layer. The final softmax layer receives the concatenated outputs from the pooling layer and predicts document categories.}
 \label{chap2:fig:cnn}
 \end{figure}
 
-Convolutional Neural Network (CNN) has proved its efficiency in document classification~\cite{kim2014convolutional}. 
-With the example in Figure~\ref{chap2:fig:cnn}, we will introduce the general principles of CNN document classifiers.
+Convolutional Neural Network (CNN) has proved its efficiency in document classification \cite{kim2014convolutional}. 
+With the example in Figure~\ref{chap2:fig:cnn}, we will introduce general principles of CNN document classifiers.
 The model first converts a tokenized document to a vector of word indices and pads the vector to a fixed length $n$. 
 Then it maps the indices to a lookup table initialized by a pre-trained word embedding, such as Word2vec~\cite{mikolov2013distributed}, GloVe~\cite{pennington2014glove} or FastText~\cite{bojanowski2017enriching} and then obtain a $n*d$ size of document representations, $A$.
 The model applies 1D convolution on the document representations $A$ with zero-padding.
 The convolution operation has multiple filters with different kernel sizes $h$.
-Each filter outputs multiple screenshots, where each screenshot is a sub matrix of $A$, $A[i: i+h] \in R^{h*d}$ and the number of screenshot is $n-h+1$.
-Therefore, we can represent the output of a screenshot as $o_i = \sigma(W \cdot A[i:i+h] + b)$, where $i \in [1, n-h+1]$, $\sigma$ is an activation function and $b$ is a bias term.
-Multiple screenshots represent generated features of a filter and feed to the pooling layer.
+Convolutional operators will apply the filter on each sub-matrix of $A$, where each sub-matrix is $A[i: i+h] \in R^{h*d}$ and the number of operations for each filter is $n-h+1$.
+Therefore, we can represent the output of a filter as $o_i = \sigma(W \cdot A[i:i+h] + b)$, where $i \in [1, n-h+1]$, $\sigma$ is an activation function and $b$ is a bias term.
+Each filter may have a different length from other filters.
+Multiple extracted features of filters and are fed to the pooling layer.
 Besides the global max pooling method shown in Figure~\ref{chap2:fig:cnn}, we also have other pooling methods such as average pooling methods.
-The core idea of the pooling layer~\cite{kim2014convolutional} is to extract one feature from each filter on document representations. 
-Finally, the classifier flattens feature representations and feeds the vector to a softmax function for predictions.
+The core idea of the 1-max-pooling layer~\cite{kim2014convolutional} is to extract one feature from each filter's one sub-matrix operation. 
+Finally, the classifier concatenates feature representations and passes the vector to a softmax function for predictions.
 
-While CNN enjoys its parallel processing ability, it only focuses on a limited context and can not retain the long sequential information like the Recurrent Neural Network (RNN)~\cite{goodfellow2016deep}. Next section, I will briefly introduce RNN based classifiers.
+While CNN enjoys its parallel processing ability, it only focuses on a limited context and can not retain the long sequential information like the RNNs~\cite{goodfellow2016deep}. Next section, I will briefly introduce RNN-based classifiers.
 
 
-\subsubsection{RNN}
+\subsubsection{RNNs}
 
 \begin{figure}[htp]
 \centering
@@ -132,48 +133,50 @@ While CNN enjoys its parallel processing ability, it only focuses on a limited c
 \label{chap2:fig:rnn}
 \end{figure}
 
-A key advantage of Recurrent Neural Network (RNN) is its ability to learn long dependency sequential information. 
+A key advantage of Recurrent Neural Networks (RNNs) is its ability to learn long sequential dependency. 
 We present a simple RNN model in Figure~\ref{chap2:fig:rnn}.
-The model reads the current word $w_t$ in every step $t$ and calculates its current hidden state $h_t$ by $h_t = f(h_{t-1}, E(w_t); W)$, where the $W$ is the weight of the function $f$ and $E(w)$ represents an embedding vector for a word token $w$.
-We can feed the final hidden state $h$ to a softmax function for predictions.
+The model reads the current word $w_t$ in every step $t$ and calculates its current hidden state $h_t$ by $h_t = f(h_{t-1}, E(w_t); W)$, where $W$ is the weights of the function $f$ and $E(w)$ represents an embedding vector for a word token $w$.
+We can pass the final hidden state $h$ to a softmax function for predictions.
 
-However, the simple RNN can suffer gradients vanish or explosion and hardly capture long dependencies in practice~\cite{pascanu2013difficulty}.
+However, the simple RNN can suffer from gradients vanish or explosion and hardly capture long dependencies in practice~\cite{pascanu2013difficulty}.
 We will introduce two main RNN variants, Long Term Short Memory (LSTM)~\cite{hochreiter1997long} and Gated Recurrent Unit (GRU)~\cite{chung2014empirical}.
 
-\paragraph{LSTM} is one type of RNN models~\cite{hochreiter1997long}. 
+\paragraph{LSTM} is one type of RNN~\cite{hochreiter1997long}. 
 It retains more information on contextual dependencies by using structures called \textit{gates}.
 The first gate is ``forget gate'' aiming to decide how much information we will throw away from the previous hidden state by 
-$$f_t = \theta(W_f \cdot [h_{t-1}, E(w_t)] + b_f)$$
-where $\theta$ is sigmoid function,\footnote{The equation of sigmoid function, $\theta(x) = \frac{e^x}{e^x+1}$.} $W_f$ is the weight, $E$ is an embedding layer and $b_f$ is the bias term.
+$$f_t = \sigma(W_f \cdot [h_{t-1}, E(w_t)] + b_f),$$
+where $\sigma$ is sigmoid function,\footnote{The equation of sigmoid function, $\sigma(x) = \frac{e^x}{e^x+1}$.} $W_f$ is the weight, $E$ is an embedding layer and $b_f$ is the bias term.
 The second gate is ``input gate'' aiming to decide how much information we will use to update the current memory by
-$$i_t = \theta(W_i \cdot [h_{t-1}, E(w_t)] + b_i)$$
-, where $W_i$ and $b_i$ are the weight and bias term respectively.
-Before applying the input gate, we have to calculate the candidate memory value $\title{C}_t$ by $$\title{C}_t = tanh(W_c \cdot [h_{t-1}, E(w_t)] + b_c)$$.
+$$i_t = \sigma(W_i \cdot [h_{t-1}, E(w_t)] + b_i),$$
+where $W_i$ and $b_i$ are the weights and bias term respectively.
+Before applying the input gate, we have to calculate the candidate memory value $\tilde{C_t}$ by $$\tilde{C_t} = tanh(W_c \cdot [h_{t-1}, E(w_t)] + b_c)$$
 Now, it is time to generate the current memory by using both forget and input gates:
-$$C_t = f_t * C_{t-1} + i_t * \title{C}_t$$, which is a weighted combination of previous and new information.
-To obtain the output of the current cell, we compute the third gate ``output gate'' by:
-$$o_t = \theta(W_o \cdot [h_{t-1}, E(w_t)], b_t)$$.
-Finally, we can output the hidden state by $$h_t = o_t * tanh(C_t)$$, where the $tanh$ is the activation function.
+$$C_t = f_t * C_{t-1} + i_t * \tilde{C_t},$$ 
+which is a weighted combination of previous and new information.
+To obtain output of the current cell, we compute the third gate ``output gate'' by:
+$$o_t = \sigma(W_o \cdot [h_{t-1}, E(w_t)] + b_t)$$
+Finally, we can output the hidden state by $$h_t = o_t * tanh(C_t),$$ 
+where the $tanh$ is an activation function.
 We can view the output hidden state as a document representation and build a final prediction layer upon the representation.
 
 
 
 \paragraph{GRU} is a simplified version of LSTM in two aspects: fewer number of gates and no memory cell~\cite{chung2014empirical}.
 First, it merges the forget and input gates into one gate, ``update gate'' by
-$$z_t = \theta(W_z \cdot [h_{t-1}, E(w_t)] + b_z)$$
-, where $\theta$ is a sigmoid function, $W$ is the function weight, $h_{t-1}$ is the previous hidden state, $w_t$ is the current input information, and $b$ is the bias term.
+$$z_t = \sigma(W_z \cdot [h_{t-1}, E(w_t)] + b_z),$$
+where $\sigma$ is a sigmoid function, $W$ is the function weight, $h_{t-1}$ is the previous hidden state, $w_t$ is the current input information, and $b$ is the bias term.
 Next the GRU combines the cell memory and hidden state into one hidden state by:
-$$h_t = (1-z_t) * h_{t-1} + z_t * \tilde{h}_t$$
-, where $\tilde{h}_t = tanh(W_h \cdot [r_t * h_{t-1}, E(w_t]))$.
-The $r_t$ refers to a ``reset gate'' and calculates the gate by $r_t = \theta(W_r \cdot [h_{t-1}, E(w_t]))$.
-The reset gate decides to retain how much previous information.
-Existing empirical research finds that the GRU shows a similar performance with the LSTM while reduces computational costs because of the simplified architecture~\cite{chung2014empirical}.
+$$h_t = (1-z_t) * h_{t-1} + z_t * \tilde{h}_t,$$
+where $\tilde{h}_t = tanh(W_h \cdot [r_t * h_{t-1}, E(w_t]))$.
+The $r_t$ refers to a ``reset gate'' and calculates the gate by $r_t = \sigma(W_r \cdot [h_{t-1}, E(w_t]))$.
+The reset gate decides how much previous information to retain.
+Past work has found that the GRU showed a similar performance with the LSTM while reduced computational costs because of the simplified architecture~\cite{chung2014empirical}.
 
 
 \subsubsection{BERT} 
-Bidirectional Encoder Representations from Transformer (BERT)~\cite{devlin2019bert} is a Transformer~\cite{vaswani2017attention} style language model learning rich semantic information on large unlabeled corpora.
+Bidirectional Encoder Representations from Transformer (BERT)~\cite{devlin2019bert} is a Transformer~\cite{vaswani2017attention} style neural model learning rich information representations on large unlabeled corpora.
 The model has two primary bases, 12 and 24 layers, which contains 110M and 340M parameters respectively.
-Outputs of the model can be feature representations of documents.
+Outputs from BERT's one or more top layer(s) can be feature representations of documents.
 We can then feed the representations to different downstream tasks.
 The pre-trained model has been widely applied in several downstream tasks, such as sentiment analysis, question answering, etc.
 
@@ -181,9 +184,9 @@ The pre-trained model has been widely applied in several downstream tasks, such 
 The language model learns semantic information from two pre-training tasks, masked language modeling (Masked LM) and next sentence prediction (NSP). 
 For the Masked LM, the model randomly replaces 15\% of tokens in a document by a special token [MASK] and then use the encoded token representations to predict the masked tokens.
 For the NSP, the model is to predict a binary relationship between two sentences that whether the second sentence follows the first sentence.
-To encode a token, BERT represents each token from three aspects: word (token), segment and position embeddings.
+To encode a token, BERT represents each token from three aspects: token (sub-word), segment and position embeddings.
 The word embedding is similar to the Section~\ref{chap2:subsubsec:emb}, the segment embedding indicates a token belongs to the first segmentation or the second one, and the position embedding encodes sequential information of tokens.
-BERT sums the three types of embeddings and forwards the representations to several layers of transformers.
+BERT sums the three types of embeddings and forwards the representations to Transformer layers.
 Outputs of the final layer are usually for downstream tasks.
 
 
@@ -200,12 +203,14 @@ Outputs of the final layer are usually for downstream tasks.
 
 This section will cover five evaluation metrics of the document classification task in this thesis: accuracy, precision, recall, F1-score and area under the roc curve (AUC).
 The higher those values are, the better document classifiers are, and vice versa.
-We can derive scores of the five metrics by the confusion matrix table (Figure~\ref{chap2:fig:confusion}). 
-The true positive (TP), false positive (FP), false negative (FN) and true negative (TN) mean that actual and predicted values are both positive, the predicted value is true while the actual value is false, the predicted value is negative while the actual value is positive, and both of predicted and actual values are negative respectively.
+We can derive scores of the five metrics by a confusion matrix table (Figure~\ref{chap2:fig:confusion}). 
+True positive (TP) measures the number of instances that actual and predicted values are both positive, while false positive (FP) calculates the number of instances that the predicted value is true while the actual value is false.
+False negative (FN) measures the number of instances that their predicted values are negative while their actual values are positive.
+True negative (TN) indicates the number of instances that their both of predicted and actual values are negative.
 The confusion matrix table can tell us insights into classification performance that what types of errors are for document classifiers.
 
 
-\paragraph{Accuracy} measures the correct rate of classifiers. We can calculate the accuracy score by $\frac{TP+TN}{TP+TN+FP+FN}$. Yet, the accuracy is not a good fit for imbalanced datasets. For example, if spam emails only account for 1\%, a 99\% accuracy score of a classifier is less meaningful.
+\paragraph{Accuracy} measures correct rate of classifiers. We can calculate the accuracy score by $\frac{TP+TN}{TP+TN+FP+FN}$. Yet, the accuracy is not a good fit for imbalanced datasets. For example, if spam emails only account for 1\%, a 99\% accuracy score of a classifier is less meaningful.
 
 \paragraph{Precision, Recall and F1-score} usually jointly measure the performance of document classification. The metrics calculate precision by $\frac{TP}{TP+FP}$, recall by $\frac{TP}{TP+FN}$ and F1-score by $2*\frac{Recall*Precision}{Recall+Precision}$.\footnote{The F1-score derives from F-$\beta$, where F-$\beta$=$\frac{(1+\beta^2)*Precision*Recall}{(\beta^2*Precision)+Recall}$. The $\beta$ is a weight factor to balance the importance of precision and recall. 
 The higher $\beta$ weighs recall higher than precision, and vice versa. 
@@ -214,23 +219,22 @@ Precision measures the rate of correctly predicted instances.
 Recall indicates the rate of correctly recognized positive instances. 
 F1-score harmonically combines precision and recall.
 Yet, class labels may have skewed distributions or different weights, particularly for multi-class classification evaluation, therefore, we can average F1-scores for individual labels differently via various modes: binary, micro, macro, weighted and samples.
-The weighted F1-score leverages balance between each label by its number of true instances.
-The score considers label imbalance during calculation and can obtain a score that is not related to overall precision and recall.\footnote{The other modes can be referred to \url{https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html}.}
+% The weighted F1-score leverages balance between each label by its number of true instances.
+The weighted F1 score calculates an F1-score for each class and then averages F1-scores on the number of true labels of each class.
+% The score considers label imbalance during calculation and can obtain a score that is not related to overall precision and recall.\footnote{The other modes can be referred to \url{https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html}.}
 
 
 \begin{figure}[tb!]
 \centering
-\includegraphics[width=0.85\textwidth]{images/chapter2/roc-curve.png}
+\includegraphics[width=0.65\textwidth]{images/chapter2/roc_curve.pdf}
 \caption{Illustration of ROC curve and AUC. The AUC score can be calculated by the ROC curve, where the curves changes with classification thresholds, the X-axis indicates the FP rate and the Y-axis refers to the TP rate.}
 \label{chap2:fig:roc}
 \end{figure}
 
 \paragraph{AUC} indicates how well the probabilities from the positive classes are separated from the negative classes. 
-We can calculate the scores by the \texttt{roc\_auc\_score} function from Scikit-Learn~\cite{pedregosa2011scikit}.
-Unlike the previous metrics depend on the probability threshold,\footnote{Usually we choose 0.5 as the threshold.} the AUC is classification-threshold-invariant.
-
-
-% \section{Metadata and Language Variations}
+A higher AUC tells models are more capable to distinguish document classes.
+% We can calculate the scores by the \texttt{roc\_auc\_score} function from Scikit-Learn~\cite{pedregosa2011scikit}.
+Unlike the previous metrics depend on the probability threshold,\footnote{Usually we choose 0.5 as the threshold.} the AUC is invariant to choice of threshold.
 
 
 \section{Domain Adaptation}
@@ -239,7 +243,7 @@ Unlike the previous metrics depend on the probability threshold,\footnote{Usuall
 % an illustration of domain adaptation in document classification;
 % introduce what we will cover in this section
 Domain adaptation aims to align source with target domain distributions while sharing the same labels in both source and target domains.
-In this section, I will present several domain adaptation methods that will be used extensively in this thesis: feature augmentation, multitask learning and domain adversarial training.
+In this section, I will present several domain adaptation methods that will be used in this thesis: feature augmentation, multitask learning and domain adversarial training.
 
 
 \subsection{Feature Augmentation}
@@ -252,11 +256,11 @@ In this section, I will present several domain adaptation methods that will be u
 \label{chap2:fig:aug}
 \end{figure}
 
-Feature augmentation in domain adaptation aims to obtain domain-independent representations of documents and therefore generalize document classifiers~\cite{blitzer2006domain, daume2007frustratingly}.
+Feature augmentation in domain adaptation aims to obtain domain-independent document representations and classifiers~\cite{blitzer2006domain, daume2007frustratingly}.
 We show a feature augmentation method in Figure~\ref{chap2:fig:aug}.
-The methods show its effectiveness in user factor~\cite{lynn2017human} and temporality~\cite{huang2018examining} adaptation for improving and generalizing document classifiers.
+The method has been shown to be effective in user factor~\cite{lynn2017human} and temporality~\cite{huang2018examining} adaptation for improving and generalizing document classifiers.
 The method first extracts features within each domain, domain-specific features.
-Next, by treating all documents as a whole, the methods extract general features, domain-independent features.
+Next, by treating all documents as a whole, the method extracts general features, domain-independent features.
 We can format a document representation by a combination of domain-specific and independent features: $\langle X_g, X_{d1}, X_{d2} \rangle$.
 A document from ``D1'' domain can be represented as $\langle X_g, X_{d1}, 0 \rangle$, and similarly, a document from ``D2'' domain can be represented as $\langle X_g, 0, X_{d2} \rangle$. 
 The model will use both domain-specific and -independent features, however, the model will only use the domain-independent features.
@@ -272,45 +276,58 @@ The goal is to train a domain-independent classifier.
 \label{chap2:fig:mtl}
 \end{figure}
 
-The Figure~\ref{chap2:fig:mtl} presents a Multitask Learning (MTL) framework with a neural model architecture.
-The two tasks share the first few layers while leaves independent layers for each task.
+Figure~\ref{chap2:fig:mtl} presents a Multitask Learning (MTL) framework with a neural model architecture.
+The two tasks share the first few layers while defining independent layers for each task.
 The MTL improves and generalizes each prediction task from the following three main aspects.
 First, adding one more prediction task can bring more training instances for tweaking the shared layers. 
-Second, the prediction tasks force the model learning task-independent representations and improve generalization by leveraging the task-specific information.
-Third, the independent layers can help learn task-related patterns for document classifiers.
+Second, the separated prediction tasks allow the model to learn task-independent representations and improve generalization by leveraging the task-specific information.
+Third, the independent layers can help document classifier learn task-related pattern.
 
 % http://ruder.io/multi-task/
 
 \subsection{Domain Adversarial Training}
 
-Domain adversarial training is a method to generalize models across domains by training document representations less sensitive and predictable towards domain categories~\cite{ganin2016domain}.
-The method assumes there are two domains, source and target domains, where source domain documents have labels and target domain documents do not.
-Two main loss functions are using the categorical cross entropy~\cite{goodfellow2016deep}: document class and domain predictions.
+Domain adversarial training is a method to generalize models across domains by training document representations to be less sensitive towards domain categories~\cite{ganin2016domain}.
+The method assumes there are two types of domains, source and target domains, where documents in source domain have labels and documents in target domain do not.
+Two main loss functions are defined, both using the categorical cross entropy~\cite{goodfellow2016deep}: document class and domain predictions.
 The domain class prediction is the regular prediction task, while the domain prediction is to predict if a document belongs to the source or target domain.
-To generalize the document representations, the method aims to penalize the high accuracy of domain prediction.
-Therefore, the method reverses the loss value of domain prediction, we can then have the following:
-$$Loss = \frac{1}{n}\sum_{i=1}^n\mathcal{L}(y_i, \hat{y}_i) - \lambda(\frac{1}{n}\sum_{i=1}^n\mathcal{L}(y_s, \hat{y}_d) + \frac{1}{\hat{n}}\sum_{i=n+1}^N\mathcal{L}(y_t, \hat{y}_d))$$
-, where $N$ is the total number of documents from both source and target domains, $n$ is the number of labeled documents from the source domain, $\hat{n}$ is the number of unlabeled documents from the target domain, $y$ refers to document label and $\hat{y}$ is the predicted document class, $\lambda$ indicates the weight of document prediction loss, $y_s$ and $y_t$ are the domain labels for source and target respectively, and $\hat{y}_d$ refers to the predicted domain label.
-Noted that usually, the final loss values are the sum of all loss functions.
-However, the domain adversarial training reverse the plus to minus in the function above, which can be viewed as an ``adversarial'' way.
+Noted that usually, the final loss values are the sum of all loss functions. 
+To generalize document representations, the method penalizes the high accuracy of domain prediction:
+\begin{align}
+\label{chap2:dat_loss}
+    \mathcal{L} &= \mathcal{L}_c - \lambda\mathcal{L}_d \\
+    \mathcal{L}_c &= \frac{1}{N}\sum_{i=1}^N\mathcal{L}(y_i, \hat{y}_i) \\ 
+    \mathcal{L}_d &= \frac{1}{N_s}\sum_{i=1}^{N_s}\mathcal{L}(y_s, \hat{y}_d) + \frac{1}{N_t}\sum_{i=1}^{N_t}\mathcal{L}(y_t, \hat{y}_d), 
+\end{align}
+where $\mathcal{L}_c$ is the loss value of document class prediction, $\mathcal{L}_d$ is the loss value of domain prediction, $\lambda$ is a weight factor of domain prediction loss, $N$ is the total number of documents from both source and target domains ($N = N_s + N_t$), $N_s$ is the number of documents from the source domain, $N_t$ is the number of documents from the target domain, $y$ refers to document label and $\hat{y}$ is the predicted document class, $y_s$ and $y_t$ are the domain labels for source and target respectively, and $\hat{y}_d$ refers to the predicted domain label.
+
+The model then uses ``Gradient Reversal Layer'' to reverse the gradient of the loss value of domain prediction. 
+Using the Equation~\ref{chap2:dat_loss}, we can then have:
+\begin{align}
+\theta &= \theta - \alpha \left( \frac{\partial \mathcal{L}_c}{\partial \theta} - \lambda \frac{\partial \mathcal{L}_d}{\partial \theta}  \right)\\
+\theta_c &= \theta_c - \alpha \frac{\partial \mathcal{L}_c}{\partial \theta_c} \\
+\theta_d &= \theta_d + \alpha \frac{- \lambda \partial \mathcal{L}_d}{\partial \theta_d},
+\end{align}
+where $\theta$ refers to model parameters, $\alpha$ is the learning rate.
+The domain adversarial training reverses the plus to minus in the functions above by using the opposite sign in the derivative of $\mathcal{L}_d$ with respect to $\theta$ and $\theta_d$, which can be viewed as an ``adversarial'' way.
 And the adversarial optimization only happens during the training step.
 Therefore, the method is called ``domain adversarial training''. 
 
 
-\section{Temporal Variations of Language}
+\section{Temporal Variation of Language}
 \label{chap2:sec:time}
 
 Language, and therefore data derived from language, changes over time~\cite{ullmann1963modern}.
-Time is implicitly embedded in the classification process: classifiers are often built to be applied to future data that doesn't yet exist, and performance on held-out data is measured to estimate performance on future data whose distribution may have changed.
+Time is implicitly embedded in classification process: classifiers are often built to be applied to future data that doesn't yet exist, and performance on held-out data is measured to estimate performance on future data whose distribution may have changed.
 This section presents an essential background of Chapter~\ref{chp:temporality}.
 
 
-\subsection{Language Shifts}
+\subsection{Language Shift}
 
-\textit{Language shift} reflects the complex mutual processes between language and human society over time.
-Word senses can shift over long periods \cite{hamilton2016diachronic}, and written language can change rapidly in online platforms \cite{eisenstein2014diffusion, goel2016social}.
-For example, the meaning of \textit{gay} has changed from \textit{cheerful} to \textit{homosexual}~\cite{hamilton2016diachronic}, and the emoji have only become available in recent years. 
-One promising solution is \textit{diachronic word embedding}, which jointly models words and temporality.
+\textit{Language shift} reflects the complex mutual processes between language and society over time.
+Word senses can shift over long periods \cite{hamilton2016diachronic}, and written language can change rapidly in online platforms \cite{eisenstein2014diffusion, goel2016social, stewart2017anorexia}.
+For example, the meaning of \textit{gay} has changed from \textit{cheerful} to \textit{homosexual}~\cite{hamilton2016diachronic}, emoji have only become available in recent years, and newcomers in online communities increase orthographic variations over time~\cite{stewart2017anorexia, stewart2018making}. 
+One promising solution to model language shifts is \textit{diachronic word embedding}, which jointly models words and temporality.
 
 
 \subsection{Diachronic Word Embedding}
@@ -324,26 +341,26 @@ One promising solution is \textit{diachronic word embedding}, which jointly mode
 \end{figure}
 
 Diachronic (dynamic) word embedding (DWE) explicitly models temporality into word embedding models.
-The DWE aims to capture the change of word semantic meaning over time~\cite{kutuzov2018diachronic}.
-Existing research utilizes the diachronic word embedding into different tasks under the topic of semantic shifts~\cite{kutuzov2018diachronic}, such as semantic shift detection~\cite{mihalcea2012word, kim2014temporal, kulkarni2015statistically, rudolph2018dynamic, yao2018dynamic, rosenfeld2018deep}, laws of semantic change~\cite{hamilton2016diachronic, dubossarsky2017outta}, diachronic semantic relations~\cite{rosin2017learning, szymanski2017temporal}, etc.
+DWE aims to capture changes of word semantic meaning over time~\cite{kutuzov2018diachronic}.
+Existing research utilizes diachronic word embedding into different tasks under topics of semantic shifts~\cite{kutuzov2018diachronic}, such as semantic shift detection~\cite{mihalcea2012word, kim2014temporal, kulkarni2015statistically, rudolph2018dynamic, yao2018dynamic, rosenfeld2018deep}, laws of semantic change~\cite{hamilton2016diachronic, dubossarsky2017outta}, diachronic semantic relations~\cite{rosin2017learning, szymanski2017temporal}, etc.
 
-The Figure~\ref{chap2:fig:diachronic} illustrates an example of building diachronic word embedding.
-First, a corpus will be split into different time intervals, which can be seasonal~\cite{huang2018examining}, yearly~\cite{yao2018dynamic}, decade~\cite{hamilton2016diachronic}:
+Figure~\ref{chap2:fig:diachronic} illustrates an example of building diachronic word embedding.
+First, a corpus will be split into different time intervals, which can be seasonal~\cite{huang2018examining}, yearly~\cite{yao2018dynamic}, by decade~\cite{hamilton2016diachronic}:
 $$C = [d_{1, 1}, ~d_{2, 1}, ~..., ~d_{i, t}] $$
 $$C_t \in C, ~~~ C_t = [d_{1, t},~ ...d_{n, t}]$$
-, where $C$ is the corpus, $d$ is a document, $i$ is the index of document and $t$ is the time label, $C_t$ is a collection of documents within the $t$ time interval and $n$ is the number of documents in $C_t$.
+, where $C$ is the corpus, $d$ is a document, $i$ is the index of document and $t$ is the time label, $C_t$ is a collection of documents within the $t$ time interval and $n_t$ is the number of documents in $C_t$.
 Next, we will initialize and train a separate word embedding model for each time interval.
-However, each well-trained word embedding model for each time interval are not in the same vector spaces because of the separate training steps. 
+However, each well-trained word embedding model for each time interval are not in the same vector spaces because of the separate training processes. 
 The next step is to map the embedding models into the same vector space.
 The alignment function is:
 $$f(W, E_{\hat{t}}) = E_t$$
-, where $\hat{t}$ and $t$ are source and target time intervals respectively, $E$ is an embedding model, $f$ is the alignment function and $W$ is a function weight to learn.
+, where $\hat{t}$ and $t$ are source and target time intervals respectively, $E$ is an embedding model, $f$ is the alignment function and $W$ is the function weights to learn.
 This step aims to align the source ($\hat{t}$) to the target time interval ($t$).
 
 Existing methods of aligning word embeddings focus on the following three directions: \textit{incremental training}~\cite{kim2014temporal}, \textit{matrix transformation}~\cite{kulkarni2015statistically, hamilton2016diachronic, yao2018dynamic} and \textit{temporal vectorization}~\cite{rosenfeld2018deep, huang2019neural}. 
 \textit{Incremental Training} utilizes a trained embedding model to initialize the embedding weights of words in the next time interval.
 \textit{Matrix Transformation} learns a transformation matrix $M \in R^{d \times d}$ by solving the following optimization:
-$$argmin \sum_{i=1}^{|V|}|E_t(w_i) - E_{\hat{t}} \cdot M|^2$$
+$$\argmin_M \sum_{i=1}^{|V|}|E_t(w_i) - E_{\hat{t}} \cdot M|^2$$
 , where $|V|$ is the vocabulary size, $w_i$ is a word from the vocabulary.
 \textit{Temporal vectorization} models time and word jointly. The first step is to represent time as a fixed-length vector. In contrast to the regular word representations, the new representation for each word will be:
 $$\hat{E}(w_i) = f(E(w_i) \cdot W_w + T_e(t) \cdot W_t)$$
@@ -358,34 +375,34 @@ Existing DWE evaluation methods~\cite{kutuzov2018diachronic} have three general 
 \textit{Cross-time analogy}~\cite{szymanski2017temporal, yao2018dynamic} is to find semantic equivalents across time intervals.
 For example, the US president is close to Obama in 2015 vs. Trump in 2017 and Apple is close to fruit in 1980 vs. Microsoft in 2018.
 \textit{Time span disambiguation}~\cite{mihalcea2012word, popescu2015semeval} is to determine the specific time spans that documents or words belong to. 
-For example, the diachronic text evaluation~\cite{popescu2015semeval} splits documents into different time intervals and evaluates if classifiers can predict correctly the time intervals of documents.
+For example, the diachronic text evaluation~\cite{popescu2015semeval} splits documents into different time intervals and evaluates if classifiers can predict correctly time intervals of documents.
 \textit{Event prediction}~\cite{kutuzov2017tracing} is to use diachronic word embeddings to predict or trace real-world events such as gun violations and conflicts.
 In this thesis, we will evaluate our proposed method by both cross-time analogy (Section~\ref{chap3:subsec:dweEval}) and document classification (Section~\ref{chap3:sec:dweExp}) tasks.
 
 
-\section{User Variations of Language}
+\section{User Variation of Language}
 \label{chap2:sec:demographic}
 
 
-Language varies across user factors including demographic factors, user profiles and user histories. 
+Language varies across user factors including demographic factors, user interests and user histories. 
 Users can use the same words for different meanings and different words for the same meaning depending on social contexts~\cite{oba2019modeling}. 
 Research has shown that user posts in social media are predictive of demographic variables such as 
 gender~\cite{rao2010classifying, rao2011hierarchical, burger2011discriminating, volkova2015inferring}, age~\cite{rosenthal2011age, hovy2015tagging, johannsen2015cross, zhang2016predicting, diaz2018addressing}, race~\cite{preoctiuc2018user} and location~\cite{eisenstein2010latent, wing2011simple, wing2014hierarchical}.
-For example, males and females express sentiment differently and young people use more widely emoji in their social media than elders.
+For example, males and females express sentiment differently and young people use emoji more widely in their social media than elders.
 Such variations can also cause biases of document classifiers towards a specific demographic group~\cite{sun2019mitigating}.
 Research shows that hate speech classifiers tend to classify African American English words as a hate crime, yet such words might strongly correlate with the specific racial group and cause racial biases~\cite{davidson2019racial, sap2019risk}.
 Therefore, it is necessary to model the user demographic factors into machine learning models.
-In this thesis, we will extensively discuss user demographic factor adaptation (Section~\ref{chap4:sec:daa}) and user embedding (Section~\ref{chap4:sec:uemb}).
+In this thesis, we will discuss user demographic factor adaptation (Section~\ref{chap4:sec:daa}) and user embedding (Section~\ref{chap4:sec:uemb}).
 And therefore, we provide the necessary background of the two topics in the following.
 
 
 \subsection{User Factor Adaptation}
 
-\textit{User factor adaptation} integrates user demographic factors and histories into the machine learning classifiers. The demographic factors usually refer to the attributes of users, such as gender, age, geographic location, etc. Online generated user texts show demographic variations in the linguistic styles could be used for the use factor prediction~\cite{rosenthal2011age, zhang2016predicting, hovy2018improving}. The user histories are the historical contexts of users, such as previous posts or likes or retweets of the users. The user factors impact on how online users express their opinions and show promising improvements in the text classification task~\cite{volkova2013exploring, hovy2015demographic, lynn2017human, yang2017overcoming}.
+\textit{User factor adaptation} integrates user-related contexts including demographic factors and user histories into machine learning classifiers. Demographic factors usually refer to the attributes of users, such as gender, age, geographic location, etc. Online generated user texts show demographic variations in linguistic styles could be used for the use factor prediction~\cite{rosenthal2011age, zhang2016predicting, hovy2018improving}. User histories are the historical contexts of users, such as previous posts or likes or retweets of the users. User factors impact on how online users express their opinions and show promising improvements in the text classification task~\cite{volkova2013exploring, hovy2015demographic, lynn2017human, yang2017overcoming}.
 
 Lynn et al~\cite{lynn2017human} use a feature augmentation method~\cite{daume2007frustratingly} to adapt user demographic factors into document classifiers.
 The method extracts two types of features: general and user attribute dependent features. 
-For example, given a document and an age attribute of the author, which is discretized into two age categories, $>24 or \leq 24$.
+For example, given a document and an age attribute of the author, which is discretized into two age categories, $> 24$ or $\leq 24$.
 Then the method can represent the document with the author age 20 as:
 $$<X_g, X_{a\leq24}, 0>$$
 , where $X_g$ is the general feature set, and $X_a$ is the age-dependent feature set.
@@ -420,8 +437,9 @@ The joint tasks aim to learn user representations $U$ from the language usage of
 \section{Demographic Bias in NLP}
 
 Machine learning models learn \textit{demographic bias} from human language.
-Fairness is especially critical to public health research, which analyzes across demographic groups. 
-Language variations across demographic groups have raised people's concerns that the demographic variations can prohibit building \textit{fair} document classifiers~\cite{sun2019mitigating, bender2018data}. 
+In this thesis, our focus of demographic bias is that document classifiers have discriminatory performance towards one demographic group than the others.
+Fairness is especially critical to public health research, because data in public health usually contains rich demographic information.
+Language variations across demographic groups have raised people's concerns that demographic variations can prohibit building \textit{fair} document classifiers~\cite{sun2019mitigating, bender2018data}. 
 For example, unintended bias~\cite{dixon2018measuring}, which highly correlates with demographic factors, will make classifiers discriminatory in that classifiers will perform better for some demographic groups than others. 
 Word embeddings, which are widely used in classification tasks, are prone to learning demographic stereotypes.
 For example, a study~\cite{bolukbasi2016man} found that the word ``programmer'' is more similar to ``man'' than ``woman'', while ``receptionist'' is more similar to ``woman''.
@@ -431,19 +449,19 @@ For example, a study~\cite{bolukbasi2016man} found that the word ``programmer'' 
 
 To reduce learning biases for document classifiers, existing research falls into three main directions: debiased word embeddings~\cite{zhao2017men}, data augmentation~\cite{dixon2018measuring, zhao2019gender} and model fine tuning~\cite{park2018reducing}.
 \textit{Debiased Word Embeddings} is to adjust embeddings the distance balance between demographic related pronouns and concepts, such as he/she with an engineer.
-\textit{Data Augmentation} is to neutralize document classifiers by changing training corpora: word blindness or replacement. 
-The core idea is to either remove demographic pronouns or replace sensitive words with neutralized words.
+\textit{Data Augmentation} can help neutralize document classifiers by changing polarized tokens in datasets such as word blindness or replacement. 
+The core idea is to either remove demographic pronouns or replace sensitive words with neutral words.
 For example, we can remove gender related words including  ``he/she'' or ``male/female'' from the corpora to prevent classifiers from judging the documents by the sensitive words.
 \textit{Model Fine Tuning} focuses on adjusting trained models on the target dataset. The method first trains a document classifier on a larger and less-biased corpus, which is similar to the target corpus. 
 Next, the method adjusts the hyperparameters of the trained model on the target corpus.
 
 
-\subsection{Fairness Evaluation}
+\subsection{Evaluating Fairness}
 
-Fairness evaluation of document classifiers focuses on examining whether document classifiers perform differently across demographic groups, such as male and female.
-In this thesis, we particularly focus on group fairness measurement~\cite{hardt2016equality}. 
+Evaluating fairness of document classifiers focuses on examining whether document classifiers perform differently across demographic groups, such as male and female.
+In this thesis, we particularly focus on measuring group fairness measurement~\cite{hardt2016equality}. 
 The motivation is to evaluate equal opportunity between demographic groups.
-Existing research~\cite{dixon2018measuring, garg2019counterfactual, park2018reducing} evaluate the author-level fairness of document classifiers by: AUC and \textit{equality differences} (ED) of true positive/negative and false positive/negative rates.
+Existing research~\cite{dixon2018measuring, garg2019counterfactual, park2018reducing} evaluates the author-level fairness of document classifiers by: AUC and \textit{equality differences} (ED) of true positive/negative and false positive/negative rates.
 
 The ED sums the differences between the rates within specific user groups and the overall rates:
 $$ED = \sum_{g \in G}|Rate - Rate_g|$$

@@ -12,7 +12,13 @@
 \usepackage{enumitem}
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
-\usepackage{acronym}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
 
 %%%%%%%%%%%%   All the preamble material:   %%%%%%%%%%%%
 
@@ -33,28 +39,29 @@
 \advisor{Prof.}				%  #1 {title}
 	{Robin Burke}			%  #2 {name}
 
-\reader{Michael J. Paul}		%  2nd person to sign thesis
-\readerThree{James H. Martin}		%  3rd person to sign thesis
-\readerFour{Mark Dredze}		%  4th person to sign thesis
-\readerFive{Byron Wallace}		%  5th person to sign thesis
+\reader{Dr. Michael J. Paul}		%  2nd person to sign thesis
+\readerThree{Prof. James H. Martin}		%  3rd person to sign thesis
+\readerFour{Prof. Mark Dredze}		%  4th person to sign thesis
+\readerFive{Prof. Byron Wallace}		%  5th person to sign thesis
 
-\abstract{  \OnePageChapter	% because it is very short
-    Metadata, implicitly embedded in documents such as time, demographic factors and user interests, can cause language variations and impact performance of document classifiers. For example, language shifts over periods of time, and males and females express sentiment differently. However, models for document classification, the automatic categorization of documents into categories, typically ignore document metadata. 
-    In this thesis, we focus on two types of document metadata, temporality and user factors.
-    We propose to use domain adaptation by treating each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporality and user factors into document classifiers and improve classification performance.
-    
-    First, we propose \textit{temporality adaptation} that explicitly incorporates time into the representation learning process via feature augmentation and diachronic word embedding. The feature augmentation method aims to learn time-independent feature weights for document classifiers. We then develop an end-to-end time-adapted model with the diachronic word embedding under a time-driven framework.
-    Second, we propose \textit{user factor adaptation} that models demographic attributes and user interests using multitask learning.
-    To model demographic attributes, document classifiers jointly predict demographic factors and document categories.
-    We further develop a multitask user embedding that jointly learns language, user behaviors and user interests.
-    We examine and visualize impacts of temporality and user factor on word, topic, semantic and classifier levels.
-    
-    Benefits of adapting demographic attributes motivate us to examine if domain adaptation can reduce demographic biases. We release a multilingual hate speech corpus with author-level demographic labels. We examine demographic variations of user language and demographic biases of document classifiers. Following this, to reduce demographic bias, we apply a feature augmentation method to learn demographic-independent classifiers.
+
+\abstract{
+Metadata, implicitly embedded in documents such as time, demographic factors and user interests, can cause language variations and impact performance of document classifiers. For example, language shifts over periods of time, and males and females express sentiment differently. However, models for document classification, the automatic categorization of documents into categories, typically ignore document metadata. 
+In this thesis, we focus on two types of document metadata, temporality and user factors.
+We propose to use domain adaptation by treating each metadata attribute as domains (e.g., gender domains: male vs. female), aiming to integrate temporality and user factors into document classifiers and improve classification performance.
+
+First, we propose \textit{temporality adaptation} that explicitly incorporates time into the representation learning process via feature augmentation and diachronic word embedding. The feature augmentation method aims to learn time-independent feature weights for document classifiers. We then develop an end-to-end time-adapted model with the diachronic word embedding under a time-driven framework.
+Second, we propose \textit{user factor adaptation} that models demographic attributes and user interests using multitask learning.
+To model demographic attributes, document classifiers jointly predict demographic factors and document categories.
+We further develop a multitask user embedding that jointly learns language, user behaviors and user interests.
+We examine and visualize impacts of temporality and user factor on word, topic, semantic and classifier levels.
+
+Benefits of adapting demographic attributes motivate us to examine if domain adaptation can reduce demographic biases. We release a multilingual hate speech corpus with author-level demographic labels. We examine demographic variations of user language and demographic biases of document classifiers. Following this, to reduce demographic bias, we apply a feature augmentation method to learn demographic-independent classifiers.
 }
 
 \dedication[Dedication]{	% NEVER use \OnePageChapter here.
 	For my family and friends, who have supported and shaped me on this academic journey.
-}
+	}
 
 \acknowledgements{	%\OnePageChapter	% *MUST* BE ONLY ONE PAGE!
     This thesis can not be done with supports from my thesis committee members and NSF IIS-1657338.
@@ -89,7 +96,7 @@
     I met Aimao Zhang when I was in Georgia Southern, and her story always encourages me along my life: never too late.
     
     Finally, I am grateful for the support from my family and loved ones over the years, especially my parents Huang S.M. and Zhang Q.L., who give me so much love and share me with their valuable experience. I am very fortunate to meet my American family in Georgia, Gail Johnson Davis and Ed Davis. Their love is warm and sweet. Yang T.T. lighted up my enthusiasm for life. We feel like we have known each other for many years while we just met each other a few months ago.
-	}
+}
 
 % \IRBprotocol{E927F29.001X}	% optional!
 
@@ -119,9 +126,10 @@
 \bibliographystyle{acm}	% or "siam", or "alpha", etc.
 \bibliography{refs}		% Bib database in "refs.bib"
 
+
 %%%%%%%%%   then the Appendices, if any   %%%%%%%%%
 % \appendix
-% \input appendixA.tex
+% \input Vita.tex
 % \input appendixB.tex
 
 
